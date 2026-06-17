@@ -495,8 +495,7 @@
         <summary>想看命理是怎麼算的？點開逐項明細</summary>
         <div id="hits"></div>
         <p style="font-size:12px;color:var(--faint);margin:12px 0 6px;line-height:1.7">
-          ＊評分以「中性 50 分」為基準，依日主五行生剋、地支六合／六沖／三合／三會／相刑／相害／相破、天干六合、十神親子星等維度加減。<br>
-          ＊最終「緣分分數」會把上述加減<b>再做一次分佈校準</b>（讓滿分更珍貴、分數更有鑑別度），所以<b>和逐項加總不會完全相等</b>，這是正常的。<br>
+          ＊評分以「親子基準 58 分」起算，依子平合盤層級加權：<b>日柱六合六沖（最貼身）＞用神喜忌互補（《滴天髓》）＞日主生剋基調＞古法生肖＞調候神煞</b>，每項加減後得最終「緣分分數」。<br>
           ＊計算以<b>國曆（陽曆）</b>為準，日柱以午夜換日、節氣採通用近似公式（極少數靠近節氣的日子可能差一天）。此為傳統框架的程式化整理，僅供文化參考。
         </p>
       </details>
@@ -695,19 +694,28 @@ function tiaohou(monthZhi){
   return null;
 }
 
-/* 分佈校準：把「50＋各維度加減」的原始分，重新映射到鑑別度更好的 0–100。
-   原始分中位數約 82、約 18% 破百（全擠在 100）；校準後 100 僅約 1%、中位數約 67。 */
-function calibrateScore(raw){
-  let o;
-  if(raw<=50) o=raw*0.96;                 // 中性以下（負面為主）照樣偏低
-  else if(raw<=80) o=48+(raw-50)*0.60;    // 50→48、80→66
-  else o=66+(raw-80)*0.72;                 // 高分段壓縮：滿分變稀有、仍可達
-  return Math.max(1,Math.min(100,Math.round(o)));
+/* ========== 子平・身強身弱 → 喜用神 ========== */
+/* 身強弱：以「月令旺衰（得令，權重最大）＋ 帮身五行占比（得地得勢）」綜合判定 */
+function bodyStrong(p,dmE){
+  const wsScore={旺:2,相:1,休:0,囚:-1,死:-2}[wangShuai(dmE,p.month.zhi)]||0;
+  const s=elementStrength(p), total=ELEMS.reduce((a,x)=>a+s[x],0)||1;
+  let yin=null; ELEMS.forEach(x=>{ if(SHENG[x]===dmE) yin=x; });   // 生我者＝印
+  const helpRatio=(s[dmE]+s[yin])/total;                            // 比劫＋印 占比
+  return (wsScore + (helpRatio-0.4)*6) > 0;                          // >0 偏身強
+}
+/* 扶抑用神（取「單一主用神／主忌神」，命中才算數，避免人人加分）：
+   身強→喜食傷洩秀、忌印生身；身弱→喜印生扶、忌官殺克身。 */
+function favorSet(p,dmE){
+  let yin=null,guan=null; ELEMS.forEach(x=>{ if(SHENG[x]===dmE)yin=x; if(KE[x]===dmE)guan=x; });
+  const shi=SHENG[dmE];                                              // 食傷＝我生（洩）
+  return bodyStrong(p,dmE)
+    ? {use:shi, avoid:yin, strong:true}                              // 身強：喜食傷、忌印
+    : {use:yin, avoid:guan, strong:false};                          // 身弱：喜印、忌官殺
 }
 
 /* ========== 合盤評分 ========== */
 function compat(pA,pB){
-  const hits=[]; let score=50;
+  const hits=[]; let score=50; // 基準：中性緣分
   const add=(pts,kind,title,desc)=>{ score+=pts; hits.push({pts,kind,title,desc}); };
 
   const dmA=pA.day.gan, dmB=pB.day.gan;
@@ -718,11 +726,11 @@ function compat(pA,pB){
 
   // 維度 A：日主生剋
   let relA="同"; // 給敘事用
-  if(SHENG[eA]===eB){ add(20,"pos","父母生子女（"+eA+"生"+eB+"）","大人的五行正好生養孩子，是天生的活水源頭，給得很自然。"); relA="父生子"; }
-  else if(SHENG[eB]===eA){ add(10,"pos","子女生父母（"+eB+"生"+eA+"）","孩子的能量會回頭滋養大人，很貼心，但他容易把自己掏空、太懂事。"); relA="子生父"; }
-  else if(KE[eA]===eB){ add(-10,"neg","父母剋子女（"+eA+"剋"+eB+"）","大人天生想「管」孩子、替他擋風遮雨，但用力過頭會變壓力。"); relA="父剋子"; }
-  else if(KE[eB]===eA){ add(-15,"neg","子女剋父母（"+eB+"剋"+eA+"）","孩子的脾氣會直接頂到大人，是最容易擦槍走火的一組，但也最像。"); relA="子剋父"; }
-  else if(eA===eB){ add(5,"pos","五行相同（同為"+eA+"）","你們是同一種材質，最懂彼此，也最容易在同一件事上卡住。"); relA="同"; }
+  if(SHENG[eA]===eB){ add(6,"pos","父母生子女（"+eA+"生"+eB+"）","大人的五行正好生養孩子，是天生的活水源頭，給得很自然。"); relA="父生子"; }
+  else if(SHENG[eB]===eA){ add(5,"pos","子女生父母（"+eB+"生"+eA+"）","孩子的能量會回頭滋養大人，很貼心，但他容易把自己掏空、太懂事。"); relA="子生父"; }
+  else if(KE[eA]===eB){ add(-3,"neg","父母剋子女（"+eA+"剋"+eB+"）","大人天生想「管」孩子、替他擋風遮雨，但用力過頭會變壓力。"); relA="父剋子"; }
+  else if(KE[eB]===eA){ add(-6,"neg","子女剋父母（"+eB+"剋"+eA+"）","孩子的脾氣會直接頂到大人，是最容易擦槍走火的一組，但也最像。"); relA="子剋父"; }
+  else if(eA===eB){ add(2,"pos","五行相同（同為"+eA+"）","你們是同一種材質，最懂彼此，也最容易在同一件事上卡住。"); relA="同"; }
 
   // 維度 B/C：地支兩兩掃描（跨兩人）
   const zA=allZhi(pA), zB=allZhi(pB);
@@ -730,13 +738,13 @@ function compat(pA,pB){
 
   // 日支六合 / 六沖（最關鍵）
   const dk=pairKey(dzA,dzB);
-  if(LIUHE[dk]){ add(20,"pos","日支六合（"+dzA+dzB+"合"+LIUHE[dk]+"）","你們的「日支」天生對頻——相處起來，常常一個眼神就懂。"); }
-  if(LIUCHONG[dzA]===dzB){ add(-20,"neg","日支六沖（"+dzA+"沖"+dzB+"）","你們像兩塊同極的磁鐵，越想靠近越彈開——不是不愛，是頻率不同。"); }
+  if(LIUHE[dk]){ add(14,"pos","日支六合（"+dzA+dzB+"合"+LIUHE[dk]+"）","你們的「日支」天生對頻——相處起來，常常一個眼神就懂。"); }
+  if(LIUCHONG[dzA]===dzB){ add(-16,"neg","日支六沖（"+dzA+"沖"+dzB+"）","你們像兩塊同極的磁鐵，越想靠近越彈開——不是不愛，是頻率不同。"); }
   // 年支六沖
-  if(LIUCHONG[yzA]===yzB){ add(-10,"neg","年支六沖（"+yzA+"沖"+yzB+"）","根源價值觀不太一樣，容易為「觀念」起爭執。"); }
+  if(LIUCHONG[yzA]===yzB){ add(-8,"neg","年支六沖（"+yzA+"沖"+yzB+"）","根源價值觀不太一樣，容易為「觀念」起爭執。"); }
   // 日支六合若無，看年支六合
   const yk=pairKey(yzA,yzB);
-  if(LIUHE[yk]){ add(8,"pos","年支六合（"+yzA+yzB+"合"+LIUHE[yk]+"）","家庭根基的磁場相合，血脈裡有股親近感。"); }
+  if(LIUHE[yk]){ add(5,"pos","年支六合（"+yzA+yzB+"合"+LIUHE[yk]+"）","家庭根基的磁場相合，血脈裡有股親近感。"); }
 
   // 三合 / 三會（用兩人合計地支，找半合或成局）
   const allZ=zA.concat(zB);
@@ -750,54 +758,65 @@ function compat(pA,pB){
       if(pts.half>0 && uniq.length===2 && inA && inB){ add(pts.half,"pos",label+"半合（"+uniq.join("")+"化"+e+"）","兩人各帶一半，湊在一起就成方向一致的力量。"); return; }
     }
   }
-  comboHit(SANHE,"三合",{full:15,half:12});
-  comboHit(SANHUI,"三會",{full:15,half:0}); // 三會須三支齊全成方，不取半合
+  comboHit(SANHE,"三合",{full:8,half:5});
+  comboHit(SANHUI,"三會",{full:8,half:0}); // 三會須三支齊全成方，不取半合
 
   // 相刑 / 相害 / 相破（掃日支與年支跨兩人）
   function softNeg(z1,z2,where){
     const ks=pairKey(z1,z2);
     if((XING[z1]&&XING[z1].includes(z2))||(XING[z2]&&XING[z2].includes(z1))){
-      add(-8,"neg","相刑（"+where+"）","相處中容易有口舌、互相挑語病，講話要多留個台階。"); }
-    if(LIUHAI[z1]===z2){ add(-5,"neg","相害（"+where+"）","有點像暗暗使不上力，好意被誤會。"); }
-    if(LIUPO[z1]===z2){ add(-5,"neg","相破（"+where+"）","計畫容易被打斷、彼此扯後腿，要刻意對齊步調。"); }
+      add(-6,"neg","相刑（"+where+"）","相處中容易有口舌、互相挑語病，講話要多留個台階。"); }
+    if(LIUHAI[z1]===z2){ add(-4,"neg","相害（"+where+"）","有點像暗暗使不上力，好意被誤會。"); }
+    if(LIUPO[z1]===z2){ add(-3,"neg","相破（"+where+"）","計畫容易被打斷、彼此扯後腿，要刻意對齊步調。"); }
   }
   softNeg(dzA,dzB,"日支"); softNeg(yzA,yzB,"年支");
 
   // 維度 E：天干六合（年干、日干）
   const ygk=pairKey(pA.year.gan,pB.year.gan);
-  if(GAN_LIUHE[ygk]){ add(8,"pos","年干六合（"+pA.year.gan+pB.year.gan+"合）","祖輩磁場相合，天生有緣。"); }
+  if(GAN_LIUHE[ygk]){ add(4,"pos","年干六合（"+pA.year.gan+pB.year.gan+"合）","祖輩磁場相合，天生有緣。"); }
   const dgk=pairKey(dmA,dmB);
-  if(GAN_LIUHE[dgk]){ add(10,"pos","日干六合（"+dmA+dmB+"合）","個性磁場互相吸引，私下其實很親。"); }
+  if(GAN_LIUHE[dgk]){ add(8,"pos","日干六合（"+dmA+dmB+"合）","個性磁場互相吸引，私下其實很親。"); }
 
-  // 維度 D：五行互補
+  // 維度 D：五行互補（缺什麼補什麼）——降權，與「用神層」概念不同
   const sA=elementStrength(pA), sB=elementStrength(pB);
   const lackB=weakest(sB), strongA=strongest(sA);
   let complement=null;
   if(sA[lackB] >= 2.0 && lackB!==strongest(sB)){
-    add(15,"pos","五行互補（大人的"+lackB+"補孩子的缺）","孩子命裡"+lackB+"比較少，而大人"+lackB+"夠旺，正好幫他補上，這是緣分裡很珍貴的一塊。");
+    add(6,"pos","五行互補（大人的"+lackB+"補孩子的缺）","孩子命裡"+lackB+"比較少，而大人"+lackB+"夠旺，正好幫他補上，這是緣分裡很珍貴的一塊。");
     complement={by:"A",elem:lackB};
   } else {
     const lackA=weakest(sA);
     if(sB[lackA] >= 2.0 && lackA!==strongest(sA)){
-      add(12,"pos","五行互補（孩子的"+lackA+"補大人的缺）","孩子帶來大人命裡較少的"+lackA+"，他的出現本身就替你補了運。");
+      add(5,"pos","五行互補（孩子的"+lackA+"補大人的缺）","孩子帶來大人命裡較少的"+lackA+"，他的出現本身就替你補了運。");
       complement={by:"B",elem:lackA};
     }
   }
+
+  // 維度 D2（核心）：用神喜忌互補（《滴天髓》）——對方日主五行，是否正是我命局所喜
+  const favA=favorSet(pA,eA), favB=favorSet(pB,eB);
+  const AfavB=(eA===favB.use), BfavA=(eB===favA.use);
+  const AavoidB=(eA===favB.avoid), BavoidA=(eB===favA.avoid);
+  let yong={AfavB,BfavA,bodyA:favA.strong,bodyB:favB.strong};
+  if(AfavB){ add(11,"pos","用神互補（你正是孩子的喜用）","以子平喜用神看——你的五行「"+eA+"」正是孩子命局最需要扶持的那一塊。<b>你天生就是他的『恩星』</b>，是合盤裡最深的一種合。"); }
+  else if(AavoidB){ add(-6,"neg","用神相忌（你偏向孩子的忌神）","你的五行對孩子命局來說偏「忌」——不是不好，是要更用心，別把力使在他其實不需要的地方。"); }
+  if(BfavA){ add(8,"pos","用神互補（孩子補了你的喜用）","孩子的五行「"+eB+"」正是你命局所喜——他的存在，本身就在旺你。"); }
+  else if(BavoidA){ add(-4,"neg","用神相忌（孩子非你命局所喜）","孩子的五行對你偏「忌」，相處上你要多給自己一點調節空間。"); }
+  if(AfavB && BfavA){ add(4,"pos","用神雙向互補","你們在喜用神上彼此成全——這在命理裡是很難得的『互為用神』，珍惜。"); }
 
   // 維度 F：十神親子星
   // 父母命中食神/傷官（子女星）旺
   const gansA=allGan(pA);
   let childStar=0;
   gansA.forEach(g=>{ const ss=shishen(eA,yyA,GAN_E[g],GAN_YY[g]); if(ss==="食神"||ss==="傷官") childStar++; });
-  if(childStar>=2){ add(8,"pos","大人命帶子女星旺","你天生就把孩子放在很前面，重視他、願意為他付出。"); }
+  if(childStar>=2){ add(3,"pos","大人命帶子女星旺","你天生就把孩子放在很前面，重視他、願意為他付出。"); }
   // 子女命中正印/偏印（父母星）旺
   const gansB=allGan(pB);
   let parentStar=0, officer=0;
   gansB.forEach(g=>{ const ss=shishen(eB,yyB,GAN_E[g],GAN_YY[g]);
     if(ss==="正印"||ss==="偏印") parentStar++;
     if(ss==="正官"||ss==="七殺") officer++; });
-  if(parentStar>=2){ add(8,"pos","孩子命帶父母星旺","孩子天生戀家、跟長輩緣分深，內心很需要你的肯定。"); }
-  if(officer>=3){ add(-5,"neg","孩子官殺偏重","孩子本來就背著比較重的規矩與壓力，別再壓太緊，他會喘不過氣。"); }
+  if(parentStar>=2){ add(3,"pos","孩子命帶父母星旺","孩子天生戀家、跟長輩緣分深，內心很需要你的肯定。"); }
+  if(officer>=3){ add(-3,"neg","孩子官殺偏重","孩子本來就背著比較重的規矩與壓力，別再壓太緊，他會喘不過氣。"); }
 
   // 維度 G：月令旺衰（旺相休囚死）——描述命局先天能量，不直接計分
   const mzA=pA.month.zhi, mzB=pB.month.zhi;
@@ -807,10 +826,10 @@ function compat(pA,pB){
   const thA=tiaohou(mzA), thB=tiaohou(mzB);
   let tiaohouHit=null;
   if(thB && eA===thB.need){
-    add(8,"pos","調候互補（你暖／潤了孩子的命）","孩子"+thB.say+"，命裡最需要「"+thB.need+"」——而你日主屬"+eA+"，正好是他命中需要的那份溫度。");
+    add(6,"pos","調候互補（你暖／潤了孩子的命）","孩子"+thB.say+"，命裡最需要「"+thB.need+"」——而你日主屬"+eA+"，正好是他命中需要的那份溫度。");
     tiaohouHit={dir:"AtoB",need:thB.need};
   } else if(thA && eB===thA.need){
-    add(6,"pos","調候互補（孩子補上你命裡的那一味）","你"+thA.say+"，命裡需要「"+thA.need+"」——孩子日主屬"+eB+"，他的到來剛好補上你命裡缺的那一味。");
+    add(5,"pos","調候互補（孩子補上你命裡的那一味）","你"+thA.say+"，命裡需要「"+thA.need+"」——孩子日主屬"+eB+"，他的到來剛好補上你命裡缺的那一味。");
     tiaohouHit={dir:"BtoA",need:thA.need};
   }
 
@@ -820,11 +839,11 @@ function compat(pA,pB){
   const bGuiInA=guiB.some(z=>zA.includes(z)); // 孩子的貴人落在大人盤→大人是孩子的貴人
   let guiren=null;
   if(aGuiInB && bGuiInA){
-    add(8,"pos","天乙貴人・互為貴人","命書裡最尊貴的吉星——你們竟然「互為貴人」。你是他的靠山，他也是你的福星，這是很深的福分。"); guiren="both";
+    add(6,"pos","天乙貴人・互為貴人","命書裡最尊貴的吉星——你們竟然「互為貴人」。你是他的靠山，他也是你的福星，這是很深的福分。"); guiren="both";
   } else if(aGuiInB){
-    add(5,"pos","天乙貴人（孩子是你的貴人）","孩子命盤裡正好帶著你的「天乙貴人」——白話說，這孩子是來旺你、幫你的貴人。"); guiren="childIsNoble";
+    add(3,"pos","天乙貴人（孩子是你的貴人）","孩子命盤裡正好帶著你的「天乙貴人」——白話說，這孩子是來旺你、幫你的貴人。"); guiren="childIsNoble";
   } else if(bGuiInA){
-    add(5,"pos","天乙貴人（你是孩子的貴人）","你命盤裡帶著孩子的「天乙貴人」——你天生就是孩子命中的那個貴人、那座靠山。"); guiren="parentIsNoble";
+    add(3,"pos","天乙貴人（你是孩子的貴人）","你命盤裡帶著孩子的「天乙貴人」——你天生就是孩子命中的那個貴人、那座靠山。"); guiren="parentIsNoble";
   }
 
   // 生肖（年支）關係——白話層
@@ -834,10 +853,10 @@ function compat(pA,pB){
   else if(SANHE.some(([g])=>g.includes(yzA)&&g.includes(yzB)&&yzA!==yzB)) zodiacRel="三合";
   else if((XING[yzA]&&XING[yzA].includes(yzB))||(XING[yzB]&&XING[yzB].includes(yzA))) zodiacRel="刑";
 
-  // 收尾：原始分經分佈校準（讓滿分稀有、分數有鑑別度）
-  score=calibrateScore(score);
+  // 收尾：直接以理論加權後的分數呈現（不再事後套曲線；好組合自然稀有）
+  score=Math.round(score); if(score>100)score=100; if(score<0)score=0;
 
-  return {score,hits,relA,eA,eB,sA,sB,complement,dmA,dmB,shishenAB,
+  return {score,hits,relA,eA,eB,sA,sB,complement,dmA,dmB,shishenAB,yong,
     dzA,dzB,liuhe:!!LIUHE[dk],liuchong:(LIUCHONG[dzA]===dzB),
     mzA,mzB,wsA,wsB,thA,thB,tiaohouHit,guiren,officerHeavy:(officer>=3),
     zodiacA:ZHI_ZODIAC[yzA],zodiacB:ZHI_ZODIAC[yzB],zodiacRel};
@@ -970,6 +989,8 @@ function buildReading(r,nameA,nameB){
   // 二、緣分裡的甜
   html+="<h3><span class='bar'></span>這段緣分，甜在哪裡</h3>";
   let sweet=[];
+  if(r.yong && r.yong.AfavB) sweet.push("命理裡最深的一種合——<span class='hl'>你正是孩子的「喜用神」</span>。以子平扶抑來看，"+nameA+"的五行剛好是"+nameB+"命局最需要扶持的那一塊，<span class='hl'>你天生就是他的『恩星』</span>，這比任何合局都珍貴。");
+  else if(r.yong && r.yong.BfavA) sweet.push("有個很珍貴的訊號——<span class='hl'>孩子補上了你的「喜用神」</span>。"+nameB+"的五行正是"+nameA+"命局所喜，他的出現本身，就在旺你。");
   if(r.liuhe) sweet.push("你們的「日支」六合——這是命理裡很難得的一塊，代表你們<span class='hl'>天生對頻</span>，常常一個眼神、一個動作就懂對方。");
   if(r.complement){ const e=r.complement.elem;
     sweet.push("你們五行剛好<span class='hl'>互補</span>——"+(r.complement.by==="A"?nameA+"把"+nameB+"命裡缺的「"+e+"」補上了":nameB+"替"+nameA+"補上了較少的「"+e+"」")+"。這種互補，是再多錢也買不到的緣分。");
@@ -1250,9 +1271,9 @@ document.querySelectorAll("input").forEach(inp=>{
 });
 // 範例填入（一組緣分很順的母子，讓人第一眼看到溫暖的一面）
 $("exBtn").addEventListener("click",()=>{
-  $("A_nick").value="媽媽"; $("A_y").value=1979; $("A_m").value=3; $("A_d").value=10; $("A_h").value="1";
+  $("A_nick").value="媽媽"; $("A_y").value=1978; $("A_m").value=6; $("A_d").value=15; $("A_h").value="9";
   document.querySelector('[data-seg="A_role"] [data-v="母"]').click();
-  $("B_nick").value="妹妹"; $("B_y").value=2008; $("B_m").value=5; $("B_d").value=5; $("B_h").value="11";
+  $("B_nick").value="妹妹"; $("B_y").value=2014; $("B_m").value=5; $("B_d").value=10; $("B_h").value="11";
   document.querySelector('[data-seg="B_role"] [data-v="女"]').click();
   runCompat();
 });
