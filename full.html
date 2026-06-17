@@ -454,6 +454,13 @@
       <p class="bcite">理論本於《三命通會》《滴天髓》《窮通寶鑑》《子平真詮》等子平經典。八字屬傳統文化、非科學，僅供參考娛樂。</p>
     </div>
 
+    <div class="card basis sans" id="twinCard">
+      <details class="binfo" style="border:none">
+        <summary>👶 <b>雙胞胎／龍鳳胎，分數一樣正常嗎？</b>（點開看）</summary>
+        <div id="twinBody"></div>
+      </details>
+    </div>
+
     <h2 class="sec" id="readHead">③ Jeff 白話・這段緣分怎麼看 <small>講給你聽，不嚇你</small></h2>
     <div class="card reading" id="reading"></div>
 
@@ -495,7 +502,7 @@
         <summary>想看命理是怎麼算的？點開逐項明細</summary>
         <div id="hits"></div>
         <p style="font-size:12px;color:var(--faint);margin:12px 0 6px;line-height:1.7">
-          ＊評分以「親子基準 58 分」起算，依子平合盤層級加權：<b>日柱六合六沖（最貼身）＞用神喜忌互補（《滴天髓》）＞日主生剋基調＞古法生肖＞調候神煞</b>，每項加減後得最終「緣分分數」。<br>
+          ＊評分以「中性 50 分」起算，依子平合盤層級加權：<b>日柱六合六沖 ≈ 用神喜忌互補（《滴天髓》扶抑）為最重 ＞ 調候互濟（《窮通寶鑑》）＞ 親子十神星（子女星／父母星）＞ 日主生剋基調 ＞ 古法生肖三合 ＞ 天乙神煞（微調）</b>，每項加減後得最終「緣分分數」。<br>
           ＊計算以<b>國曆（陽曆）</b>為準，日柱以午夜換日、節氣採通用近似公式（極少數靠近節氣的日子可能差一天）。此為傳統框架的程式化整理，僅供文化參考。
         </p>
       </details>
@@ -697,20 +704,32 @@ function tiaohou(monthZhi){
 /* ========== 子平・身強身弱 → 喜用神 ========== */
 /* 身強弱：以「月令旺衰（得令，權重最大）＋ 帮身五行占比（得地得勢）」綜合判定 */
 function bodyStrong(p,dmE){
+  // 月令為主（得時，權重最大）＋ 帮身占比（得地得勢）為輔
   const wsScore={旺:2,相:1,休:0,囚:-1,死:-2}[wangShuai(dmE,p.month.zhi)]||0;
   const s=elementStrength(p), total=ELEMS.reduce((a,x)=>a+s[x],0)||1;
   let yin=null; ELEMS.forEach(x=>{ if(SHENG[x]===dmE) yin=x; });   // 生我者＝印
   const helpRatio=(s[dmE]+s[yin])/total;                            // 比劫＋印 占比
-  return (wsScore + (helpRatio-0.4)*6) > 0;                          // >0 偏身強
+  return (wsScore*2.4 + (helpRatio-0.42)*4) > 0;                     // 月令主導；>0 偏身強
 }
-/* 扶抑用神（取「單一主用神／主忌神」，命中才算數，避免人人加分）：
-   身強→喜食傷洩秀、忌印生身；身弱→喜印生扶、忌官殺克身。 */
+/* 扶抑用神（取單一主用神／主忌神，命中才算數）：身強喜洩剋耗、身弱喜生扶。
+   並補例外：印多身強取財破印、身弱印不現取比劫幫身。 */
 function favorSet(p,dmE){
   let yin=null,guan=null; ELEMS.forEach(x=>{ if(SHENG[x]===dmE)yin=x; if(KE[x]===dmE)guan=x; });
-  const shi=SHENG[dmE];                                              // 食傷＝我生（洩）
-  return bodyStrong(p,dmE)
-    ? {use:shi, avoid:yin, strong:true}                              // 身強：喜食傷、忌印
-    : {use:yin, avoid:guan, strong:false};                          // 身弱：喜印、忌官殺
+  const shi=SHENG[dmE], cai=KE[dmE];                                 // 食傷＝我生（洩）、財＝我克
+  const s=elementStrength(p), total=ELEMS.reduce((a,x)=>a+s[x],0)||1;
+  if(bodyStrong(p,dmE)){
+    return (s[yin] > total*0.24)
+      ? {use:cai, avoid:yin, strong:true}                            // 印多身強：取財破印
+      : {use:shi, avoid:yin, strong:true};                           // 一般身強：取食傷洩秀
+  }
+  return (s[yin] > total*0.10)
+    ? {use:yin, avoid:guan, strong:false}                            // 身弱：取印生扶
+    : {use:dmE, avoid:guan, strong:false};                           // 印不現：取比劫幫身
+}
+
+/* 大運起運順逆：陽男陰女順行、陰男陽女逆行（看年干陰陽 × 性別）。經顧問四源交叉確認。 */
+function daYunDir(yearGan, isMale){
+  return (GAN_YY[yearGan]==="陽")===isMale ? "順行" : "逆行";
 }
 
 /* ========== 合盤評分 ========== */
@@ -739,7 +758,7 @@ function compat(pA,pB){
   // 日支六合 / 六沖（最關鍵）
   const dk=pairKey(dzA,dzB);
   if(LIUHE[dk]){ add(14,"pos","日支六合（"+dzA+dzB+"合"+LIUHE[dk]+"）","你們的「日支」天生對頻——相處起來，常常一個眼神就懂。"); }
-  if(LIUCHONG[dzA]===dzB){ add(-16,"neg","日支六沖（"+dzA+"沖"+dzB+"）","你們像兩塊同極的磁鐵，越想靠近越彈開——不是不愛，是頻率不同。"); }
+  if(LIUCHONG[dzA]===dzB){ add(-12,"neg","日支六沖（"+dzA+"沖"+dzB+"）","你們像兩塊同極的磁鐵，越想靠近越彈開——不是不愛，是頻率不同。沖不等於不合，常被合或用神化解。"); }
   // 年支六沖
   if(LIUCHONG[yzA]===yzB){ add(-8,"neg","年支六沖（"+yzA+"沖"+yzB+"）","根源價值觀不太一樣，容易為「觀念」起爭執。"); }
   // 日支六合若無，看年支六合
@@ -777,45 +796,48 @@ function compat(pA,pB){
   const dgk=pairKey(dmA,dmB);
   if(GAN_LIUHE[dgk]){ add(8,"pos","日干六合（"+dmA+dmB+"合）","個性磁場互相吸引，私下其實很親。"); }
 
-  // 維度 D：五行互補（缺什麼補什麼）——降權，與「用神層」概念不同
+  // 維度 D2（核心）：用神喜忌互補（《滴天髓》扶抑用神）——與日柱並列最重
   const sA=elementStrength(pA), sB=elementStrength(pB);
-  const lackB=weakest(sB), strongA=strongest(sA);
-  let complement=null;
-  if(sA[lackB] >= 2.0 && lackB!==strongest(sB)){
-    add(6,"pos","五行互補（大人的"+lackB+"補孩子的缺）","孩子命裡"+lackB+"比較少，而大人"+lackB+"夠旺，正好幫他補上，這是緣分裡很珍貴的一塊。");
-    complement={by:"A",elem:lackB};
-  } else {
-    const lackA=weakest(sA);
-    if(sB[lackA] >= 2.0 && lackA!==strongest(sA)){
-      add(5,"pos","五行互補（孩子的"+lackA+"補大人的缺）","孩子帶來大人命裡較少的"+lackA+"，他的出現本身就替你補了運。");
-      complement={by:"B",elem:lackA};
-    }
-  }
-
-  // 維度 D2（核心）：用神喜忌互補（《滴天髓》）——對方日主五行，是否正是我命局所喜
   const favA=favorSet(pA,eA), favB=favorSet(pB,eB);
   const AfavB=(eA===favB.use), BfavA=(eB===favA.use);
   const AavoidB=(eA===favB.avoid), BavoidA=(eB===favA.avoid);
   let yong={AfavB,BfavA,bodyA:favA.strong,bodyB:favB.strong};
-  if(AfavB){ add(11,"pos","用神互補（你正是孩子的喜用）","以子平喜用神看——你的五行「"+eA+"」正是孩子命局最需要扶持的那一塊。<b>你天生就是他的『恩星』</b>，是合盤裡最深的一種合。"); }
+  if(AfavB){ add(14,"pos","用神互補（你正是孩子的喜用）","以子平喜用神看——你的五行「"+eA+"」正是孩子命局最需要扶持的那一塊。<b>你天生就是他的『恩星』</b>，是合盤裡最深的一種合。"); }
   else if(AavoidB){ add(-6,"neg","用神相忌（你偏向孩子的忌神）","你的五行對孩子命局來說偏「忌」——不是不好，是要更用心，別把力使在他其實不需要的地方。"); }
-  if(BfavA){ add(8,"pos","用神互補（孩子補了你的喜用）","孩子的五行「"+eB+"」正是你命局所喜——他的存在，本身就在旺你。"); }
+  if(BfavA){ add(10,"pos","用神互補（孩子補了你的喜用）","孩子的五行「"+eB+"」正是你命局所喜——他的存在，本身就在旺你。"); }
   else if(BavoidA){ add(-4,"neg","用神相忌（孩子非你命局所喜）","孩子的五行對你偏「忌」，相處上你要多給自己一點調節空間。"); }
   if(AfavB && BfavA){ add(4,"pos","用神雙向互補","你們在喜用神上彼此成全——這在命理裡是很難得的『互為用神』，珍惜。"); }
+  else if(AavoidB && BavoidA){ add(-5,"neg","共同忌神（易互相加劇）","你們命裡忌的五行剛好相同、又都偏旺，容易放大彼此的弱點，相處時別一起鑽牛角尖。"); }
+
+  // 維度 D：五行互補（缺什麼補什麼）——僅在「用神互補」未命中時補位，避免重複加分
+  const lackB=weakest(sB);
+  let complement=null;
+  if(!AfavB && !BfavA){
+    if(sA[lackB] >= 2.0 && lackB!==strongest(sB)){
+      add(6,"pos","五行互補（大人的"+lackB+"補孩子的缺）","孩子命裡"+lackB+"比較少，而大人"+lackB+"夠旺，正好幫他補上，這是緣分裡很珍貴的一塊。");
+      complement={by:"A",elem:lackB};
+    } else {
+      const lackA=weakest(sA);
+      if(sB[lackA] >= 2.0 && lackA!==strongest(sA)){
+        add(5,"pos","五行互補（孩子的"+lackA+"補大人的缺）","孩子帶來大人命裡較少的"+lackA+"，他的出現本身就替你補了運。");
+        complement={by:"B",elem:lackA};
+      }
+    }
+  }
 
   // 維度 F：十神親子星
   // 父母命中食神/傷官（子女星）旺
   const gansA=allGan(pA);
   let childStar=0;
   gansA.forEach(g=>{ const ss=shishen(eA,yyA,GAN_E[g],GAN_YY[g]); if(ss==="食神"||ss==="傷官") childStar++; });
-  if(childStar>=2){ add(3,"pos","大人命帶子女星旺","你天生就把孩子放在很前面，重視他、願意為他付出。"); }
+  if(childStar>=2){ add(6,"pos","大人命帶子女星旺","你天生就把孩子放在很前面，重視他、願意為他付出。"); }
   // 子女命中正印/偏印（父母星）旺
   const gansB=allGan(pB);
   let parentStar=0, officer=0;
   gansB.forEach(g=>{ const ss=shishen(eB,yyB,GAN_E[g],GAN_YY[g]);
     if(ss==="正印"||ss==="偏印") parentStar++;
     if(ss==="正官"||ss==="七殺") officer++; });
-  if(parentStar>=2){ add(3,"pos","孩子命帶父母星旺","孩子天生戀家、跟長輩緣分深，內心很需要你的肯定。"); }
+  if(parentStar>=2){ add(6,"pos","孩子命帶父母星旺","孩子天生戀家、跟長輩緣分深，內心很需要你的肯定。"); }
   if(officer>=3){ add(-3,"neg","孩子官殺偏重","孩子本來就背著比較重的規矩與壓力，別再壓太緊，他會喘不過氣。"); }
 
   // 維度 G：月令旺衰（旺相休囚死）——描述命局先天能量，不直接計分
@@ -826,10 +848,10 @@ function compat(pA,pB){
   const thA=tiaohou(mzA), thB=tiaohou(mzB);
   let tiaohouHit=null;
   if(thB && eA===thB.need){
-    add(6,"pos","調候互補（你暖／潤了孩子的命）","孩子"+thB.say+"，命裡最需要「"+thB.need+"」——而你日主屬"+eA+"，正好是他命中需要的那份溫度。");
+    add(8,"pos","調候互補（你暖／潤了孩子的命）","孩子"+thB.say+"，命裡最需要「"+thB.need+"」——而你日主屬"+eA+"，正好是他命中需要的那份溫度。《窮通寶鑑》視調候互濟為合盤高階吉象。");
     tiaohouHit={dir:"AtoB",need:thB.need};
   } else if(thA && eB===thA.need){
-    add(5,"pos","調候互補（孩子補上你命裡的那一味）","你"+thA.say+"，命裡需要「"+thA.need+"」——孩子日主屬"+eB+"，他的到來剛好補上你命裡缺的那一味。");
+    add(7,"pos","調候互補（孩子補上你命裡的那一味）","你"+thA.say+"，命裡需要「"+thA.need+"」——孩子日主屬"+eB+"，他的到來剛好補上你命裡缺的那一味。");
     tiaohouHit={dir:"BtoA",need:thA.need};
   }
 
@@ -1049,6 +1071,17 @@ function buildReadingTeaser(r,nameA,nameB){
   return html;
 }
 
+/* 雙胞胎／龍鳳胎說明（含該孩子的大運順逆） */
+function buildTwinNote(childName, childYearGan, isMale){
+  const dir=daYunDir(childYearGan,isMale), opp=(dir==="順行"?"逆行":"順行");
+  const yy=GAN_YY[childYearGan], sex=isMale?"男":"女";
+  return "<p>同一個時辰出生的雙胞胎，八字（年月日時）<b>完全相同</b>——跟同一個爸媽算，<b>緣分分數會一樣，這是正確的</b>（本工具測的是「本命磁場／緣分」，雙胞胎本命相同，不是算錯）。</p>"
+    +"<p>那雙胞胎為什麼個性差很多？真正的差異在<b>大運</b>與後天：</p>"
+    +"<p>・<b>龍鳳胎（一男一女）</b>：因性別不同，大運方向<b>相反</b>（古法「陽男陰女順、陰男陽女逆」）。以 "+childName+" 的年干「"+childYearGan+"」（"+yy+"干）× "+sex+"來看，"+childName+" 是<b>大運"+dir+"</b>；若有異性的雙胞胎手足，對方就是相反的<b>"+opp+"</b>——所以兩人發力時機、人生節奏不同。</p>"
+    +"<p>・<b>同性雙胞胎</b>：八字與大運方向都一樣，差異主要靠<b>出生時辰的邊界</b>（差幾分鐘可能跨時辰，命盤就分岔）＋後天環境、排行、教養。</p>"
+    +"<p style='font-size:12px;color:var(--faint)'>＊常見誤傳「老大順、老二逆」——順逆看的是<b>性別與年干</b>，不是出生順序。</p>";
+}
+
 /* ========== 給父母的三個建議（理論客製：十神 × 十天干 × 命局特徵） ========== */
 /* 第一條：依十神親子關係的相處心法（10 種） */
 const ADVICE_SHISHEN={
@@ -1238,6 +1271,9 @@ function runCompat(){
     $("igGate").style.display="block";
     $("adviceHead").style.display="none"; $("advice").style.display="none";
   }
+  // 雙胞胎／龍鳳胎說明（依孩子年干＋性別算大運順逆）
+  $("twinBody").innerHTML=pangu(buildTwinNote(nameB, pB.year.gan, state.B_role==="男"));
+
   const hitHtml=r.hits.map(h=>{
     const k=h.kind, tag=k==="pos"?"加分":(k==="neg"?"扣分":"中性");
     return "<div class='hit'><span class='tag "+k+"'>"+tag+"</span>"
