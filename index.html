@@ -1187,7 +1187,7 @@ $("printBtn").addEventListener("click",()=>{ window.print(); });
 /* 病毒式金句：依「這對的實際解讀」總結出 3 句（不是隨機，而是對應內文） */
 const HOOK_SS={
   比肩:"八字說我跟孩子是同款硬脾氣 🤝 最懂也最會吵",
-  劫財:"命理認證：我家有兩個搶最後一句的人 😆 但超親",
+  劫財:"命理認證：我們兩個都不肯認輸 😆 吵完又超黏",
   食神:"這孩子是我才華與溫柔的延伸，疼他心甘情願 🍼",
   傷官:"八字說我家有個反骨小天才 🎤 給他舞台就發光",
   正財:"命理說孩子是我最想守護的心頭肉 💎 難怪我管很兇",
@@ -1237,7 +1237,7 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   bg.addColorStop(0,"#191019"); bg.addColorStop(.5,"#33203a"); bg.addColorStop(1,"#241627");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
   ctx.save();
-  const cyG=big?800:560;
+  const cyG=big?700:560;
   for(let i=0;i<3;i++){ ctx.strokeStyle="rgba(231,196,119,"+(0.05-i*0.012)+")"; ctx.lineWidth=2;
     ctx.beginPath(); ctx.arc(cx,cyG,(big?320:280)+i*70,0,Math.PI*2); ctx.stroke(); }
   const gl=ctx.createRadialGradient(cx,cyG,60,cx,cyG,W*0.85);
@@ -1265,7 +1265,7 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   ctx.fillText(clip(nameA,6)+"  ✕  "+clip(nameB,6), cx, big?322:286);
 
   // 分數大圓環（prog 控制掃描與計數）
-  const cy=big?800:560, R=big?218:176;
+  const cy=big?700:560, R=big?218:176;
   ctx.lineCap="round";
   ctx.lineWidth=big?32:28; ctx.strokeStyle="rgba(255,255,255,.10)";
   ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
@@ -1300,7 +1300,7 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   const quoteF=big?54:46, lh=big?86:72;
   ctx.font='700 '+quoteF+'px "Noto Serif TC",serif';
   const lines=wrapSmart(ctx, shareHook(r), W-(big?240:210), 3);
-  const qCenter=big?1450:H-320;
+  const qCenter=big?1300:H-320;
   const qTop=qCenter-(lines.length-1)*lh/2;
   const padX=big?36:30, ph=quoteF*1.42;
   lines.forEach((ln,i)=>{ const ly=qTop+i*lh, tw=ctx.measureText(ln).width;
@@ -1312,7 +1312,7 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
 
   // CTA（ctaA 淡入）
   ctx.save(); ctx.globalAlpha=ctaA;
-  const c1=big?H-264:H-176, c2=big?H-208:H-130, c3=big?H-166:H-92;
+  const c1=big?H-330:H-176, c2=big?H-274:H-130, c3=big?H-232:H-92;
   ctx.fillStyle="#e7c477"; ctx.font='700 '+(big?46:40)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("👀 你跟孩子，是哪一組？", cx, c1);
   ctx.fillStyle="rgba(246,236,216,.9)"; ctx.font='500 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
