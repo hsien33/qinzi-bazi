@@ -230,16 +230,25 @@
   /* 五行能量（白話版） */
   .wx2-intro{font-size:13.5px;color:var(--soft);line-height:1.85;margin-bottom:12px}
   .wx2-intro b{color:var(--plum-d)}
-  .wx2-card{background:var(--cream);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin:10px 0}
-  .wx2-name{font-size:14.5px;font-weight:700;color:var(--plum-d);margin-bottom:9px}
-  .wx2-row{display:flex;align-items:center;gap:9px;margin:6px 0}
+  .wx2-card{background:linear-gradient(180deg,#fffdf8,#f5ecda);border:1px solid var(--gold-l);border-radius:15px;
+    padding:15px 17px;margin:12px 0;box-shadow:0 6px 18px rgba(120,90,50,.08)}
+  .wx2-name{font-size:14.5px;font-weight:700;color:var(--plum-d);margin-bottom:11px}
+  .wx2-row{display:flex;align-items:center;gap:10px;margin:9px 0}
   .wx2-el{flex:0 0 20px;font-size:15px;font-weight:700;text-align:center}
-  .wx2-track{flex:1;height:15px;background:#e7dcc6;border-radius:999px;overflow:hidden}
-  .wx2-track i{display:block;height:100%;border-radius:999px;transition:width .6s ease}
+  .wx2-track{flex:1;height:21px;border-radius:999px;
+    background:linear-gradient(180deg,#d7caae,#ece2ce);
+    box-shadow:inset 0 2px 5px rgba(90,60,30,.22), inset 0 -1px 0 rgba(255,255,255,.55)}
+  .wx2-track i{display:block;height:100%;min-width:16px;border-radius:999px;position:relative;
+    transition:width .8s cubic-bezier(.2,.8,.2,1);
+    background-image:linear-gradient(180deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.12) 40%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.28) 100%);
+    box-shadow:0 2px 7px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 6px rgba(255,255,255,.15)}
+  .wx2-track i::after{content:"";position:absolute;left:5%;right:5%;top:13%;height:34%;border-radius:999px;
+    background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));pointer-events:none}
   .wx2-pct{flex:0 0 40px;text-align:right;font-size:12.5px;color:var(--soft);font-variant-numeric:tabular-nums}
-  .wtag{flex:0 0 auto;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700}
-  .wtag.hot{background:#f3d9c0;color:#b5502f}
-  .wtag.low{background:#dde3e8;color:#5a6b78}
+  .wtag{flex:0 0 auto;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(0,0,0,.08)}
+  .wtag.hot{background:linear-gradient(180deg,#f7e0c8,#eecaa6);color:#b5502f}
+  .wtag.low{background:linear-gradient(180deg,#e6ecf1,#d3dde5);color:#5a6b78}
   .wx2-take{font-size:13.5px;color:#4a3c2c;line-height:1.95;margin-top:12px;background:#f8f1e4;border-radius:11px;padding:12px 15px}
   .wx2-take b{color:var(--plum-d)}
   .rnote{margin-top:14px;font-size:12px;color:var(--faint);line-height:1.7;background:#fbf6ec;border:1px dashed #e3d4b6;
@@ -1206,8 +1215,9 @@ function renderWuxing(sA,sB,nameA,nameB){
       const pct=Math.round(s[e]/tot*100);
       const w=Math.max(5,Math.round(s[e]/mx*100));
       const tag=e===st?"<span class='wtag hot'>最多</span>":(e===wk?"<span class='wtag low'>最少</span>":"");
+      const glow="0 2px 7px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.6),0 0 10px "+E_COLOR[e]+"55";
       return "<div class='wx2-row'><span class='wx2-el' style='color:"+E_COLOR[e]+"'>"+e+"</span>"
-        +"<span class='wx2-track'><i style='width:"+w+"%;background:"+E_COLOR[e]+"'></i></span>"
+        +"<span class='wx2-track'><i style='width:"+w+"%;background-color:"+E_COLOR[e]+";box-shadow:"+glow+"'></i></span>"
         +"<span class='wx2-pct'>"+pct+"%</span>"+tag+"</div>";
     }).join("");
     return "<div class='wx2-card'><div class='wx2-name'>"+name+"</div>"+rows+"</div>";
