@@ -422,7 +422,7 @@
         <div class="verdict" id="r_verdict"></div>
         <div class="oneline" id="r_oneline"></div>
         <div class="meter"><i id="r_meter"></i></div>
-        <div class="scnote">分數只是骨架——下面的「相處之道」，才是真正想送給你的</div>
+        <div class="scnote">分數採古法「上中下等婚」刻度（中等婚 60+、上等婚 80+）——只是骨架，下面的「相處之道」才是重點</div>
       </div>
 
       <div class="charts">
@@ -435,8 +435,8 @@
     </div>
 
     <div class="card basis sans">
-      <div class="bhead"><span class="bicon">🏛</span><b>這份解讀，是怎麼算出來的</b></div>
-      <p class="bsub">不是隨便配對——每一句話，背後都有傳統八字理論撐著。<b>點任一項展開看更詳細 ↓</b></p>
+      <details class="binfo" style="border:none"><summary>🏛 <b>這份解讀，是怎麼算出來的？</b><small style="color:var(--faint)">　點開看六大命理依據</small></summary>
+      <p class="bsub" style="margin-top:10px">不是隨便配對——每一句話，背後都有傳統八字理論撐著。</p>
       <div class="blist2">
         <details class="binfo"><summary>☯ <b>子平八字・四柱</b>：用生日時辰排出八個字</summary>
           <div>把<b>國曆</b>的「年・月・日・時」各換成一組干支（天干＋地支），就是<b>八個字</b>，所以叫「八字」，也叫「四柱」。<br>其中<b>「日柱的天干」就是『日主』，代表你本人</b>——整張命盤都以它為核心來看：你天生是什麼材質、跟誰相生相剋。我們用的就是這套北宋徐子平確立的「子平法」。</div></details>
@@ -452,6 +452,7 @@
           <div>「天乙貴人」是命書裡<b>最尊貴的吉星</b>。依日主的天干，會對應到兩個「貴人地支」（歌訣：甲戊庚牛羊、乙己鼠猴、丙丁豬雞、壬癸兔蛇、六辛馬虎）。<br>如果你的貴人地支，出現在孩子的命盤裡，代表<b>孩子是你的貴人</b>；反之則你是孩子的貴人；兩邊都有，就是難得的「<b>互為貴人</b>」。</div></details>
       </div>
       <p class="bcite">理論本於《三命通會》《滴天髓》《窮通寶鑑》《子平真詮》等子平經典。八字屬傳統文化、非科學，僅供參考娛樂。</p>
+      </details>
     </div>
 
     <div class="card basis sans" id="twinCard">
@@ -503,7 +504,7 @@
         <div id="hits"></div>
         <p style="font-size:12px;color:var(--faint);margin:12px 0 6px;line-height:1.7">
           ＊先以子平合盤層級加權算出「相對緣分」：<b>日柱六合六沖 ≈ 用神喜忌互補（《滴天髓》扶抑）為最重 ＞ 調候互濟（《窮通寶鑑》）＞ 親子十神星 ＞ 日主生剋基調 ＞ 古法生肖三合 ＞ 天乙神煞</b>。<br>
-          ＊再依古法「<b>上中下等婚</b>」與合婚慣例換算成百分制呈現（中等婚 60+、上等婚 80+；親子先天有緣，沖剋多的會委婉提醒、不打難堪低分）。<b>相對高低由命理決定，只是把刻度對齊大家熟悉的呈現。</b><br>
+          ＊再依古法「<b>上中下等婚</b>」與合婚慣例換算成百分制呈現（中等婚 60+、上等婚 80+；對應上方評語：<b>80+＝親緣良好、90+＝親緣極佳</b>。親子先天有緣，沖剋多的會委婉提醒、不打難堪低分，地板 60）。<b>相對高低由命理決定，只是把刻度對齊大家熟悉的呈現。</b><br>
           ＊計算以<b>國曆（陽曆）</b>為準，日柱以午夜換日、節氣採通用近似公式（極少數靠近節氣的日子可能差一天）。此為傳統框架的程式化整理，僅供文化參考。
         </p>
       </details>
@@ -526,6 +527,8 @@
     </div>
     <div class="copyr">
       八字命理屬傳統文化，非科學，本工具結果僅供參考娛樂，不作任何教養、醫療、法律或重大決策依據。<br>
+      🔒 <b>你的隱私：</b>輸入的生日只暫存在你自己的裝置（瀏覽器），<b>不會上傳、我們也收不到</b>。共用裝置可按
+      <a href="#" id="clearBtn" style="color:var(--gold-l);text-decoration:underline">清除我的資料</a> 清空。<br>
       © 財富煉金術 Wealth Alchemy ・ 親子緣分解讀工具
     </div>
   </footer>
@@ -736,7 +739,7 @@ function presentScore(s){
   if(s<=50) o=67+(s-50)*0.5;          // 中性50→67（中等婚）；以下緩降
   else if(s<=67) o=67+(s-50)*0.765;   // 50→67、67→80（中等過渡上等）
   else o=80+(s-67)*0.606;             // 67→80、100→100（上等婚帶，滿分稀有）
-  return Math.max(54,Math.min(100,Math.round(o)));
+  return Math.max(60,Math.min(100,Math.round(o)));  // 地板 60（中等婚，不打難堪低分）
 }
 
 /* 大運起運順逆：陽男陰女順行、陰男陽女逆行（看年干陰陽 × 性別）。經顧問四源交叉確認。 */
@@ -760,7 +763,7 @@ function compat(pA,pB){
   if(SHENG[eA]===eB){ add(6,"pos","父母生子女（"+eA+"生"+eB+"）","大人的五行正好生養孩子，是天生的活水源頭，給得很自然。"); relA="父生子"; }
   else if(SHENG[eB]===eA){ add(5,"pos","子女生父母（"+eB+"生"+eA+"）","孩子的能量會回頭滋養大人，很貼心，但他容易把自己掏空、太懂事。"); relA="子生父"; }
   else if(KE[eA]===eB){ add(-3,"neg","父母剋子女（"+eA+"剋"+eB+"）","大人天生想「管」孩子、替他擋風遮雨，但用力過頭會變壓力。"); relA="父剋子"; }
-  else if(KE[eB]===eA){ add(-6,"neg","子女剋父母（"+eB+"剋"+eA+"）","孩子的脾氣會直接頂到大人，是最容易擦槍走火的一組，但也最像。"); relA="子剋父"; }
+  else if(KE[eB]===eA){ add(-6,"neg","子女剋父母（"+eB+"剋"+eA+"）","孩子的能量比較直、容易正面頂到大人——其實是因為他最像你。古法視為較有張力的一組，但張力裡，藏著最深的牽絆。"); relA="子剋父"; }
   else if(eA===eB){ add(2,"pos","五行相同（同為"+eA+"）","你們是同一種材質，最懂彼此，也最容易在同一件事上卡住。"); relA="同"; }
 
   // 維度 B/C：地支兩兩掃描（跨兩人）
@@ -997,13 +1000,15 @@ function buildReading(r,nameA,nameB){
   // 月令旺衰（先天能量）——子平法看強弱，先看生月
   const wsSay={旺:"能量最飽滿、底氣足，是天生的主角型",相:"得月令幫襯、順順的，做事容易有人扶",
     休:"溫和內斂、懂得退讓，不愛搶鋒頭",囚:"先天有點壓抑、需要被支持與鼓勵",死:"先天能量最弱、最需要被疼、被托住"};
+  // 白話標籤（避免「囚／死」術語直接嚇到家長；術語留在命理依據區）
+  const wsLab={旺:"能量很旺",相:"得令、順",休:"溫和內斂",囚:"先天偏弱",死:"先天最需要被托住"};
   if(r.wsA&&r.wsB){
     const moN=(cal,zhi)=>"國曆 "+cal+" 月"+(zhi?"（八字節氣為「"+zhi+"」月，當令屬"+ZHI_SEASON[zhi]+"）":"");
     html+="<h3><span class='bar'></span>從生月看，他們先天的底氣</h3>";
     html+="<p>命理看一個人的強弱，先看「生在哪個月」——這叫<span class='hl'>月令旺衰</span>，是子平八字的根。<br>"
       +"<small style='color:var(--faint)'>（八字用「節氣月」，名稱跟國曆月不同：例如國曆 10 月多落在「戌」月、7 月落在「未」月，都是正常的。）</small><br>"
-      +nameA+"生在<b>"+moN(r.monA,r.mzA)+"</b>，日主"+r.dmA+"處於「<b>"+r.wsA+"</b>」——"+wsSay[r.wsA]+"。<br>"
-      +nameB+"生在<b>"+moN(r.monB,r.mzB)+"</b>，日主"+r.dmB+"處於「<b>"+r.wsB+"</b>」——"+wsSay[r.wsB]+"。</p>";
+      +nameA+"生在<b>"+moN(r.monA,r.mzA)+"</b>，日主"+r.dmA+"<b>"+wsLab[r.wsA]+"</b>——"+wsSay[r.wsA]+"。<br>"
+      +nameB+"生在<b>"+moN(r.monB,r.mzB)+"</b>，日主"+r.dmB+"<b>"+wsLab[r.wsB]+"</b>——"+wsSay[r.wsB]+"。</p>";
     if(r.wsB==="囚"||r.wsB==="死") html+="<p><span class='hl'>孩子先天能量比較弱，不是不好，是更需要你穩穩托住他</span>——你的肯定，對他來說就是最補的那帖藥。</p>";
     else if(r.wsB==="旺") html+="<p>孩子先天能量旺、很有主見——<span class='hl'>與其壓他，不如給他方向</span>，他會跑得比你想像的更遠。</p>";
   }
@@ -1077,7 +1082,19 @@ function buildReadingTeaser(r,nameA,nameB){
       +"<div class='ssone'>在你眼中，這孩子"+ss.one+"。</div>"
       +"<p style='margin:8px 0 0'>"+ss.body+"</p></div>";
   }
-  html+="<div class='teasercut'>👇 接下來還有——<b>你們先天的底氣（旺衰）、緣分的甜與卡、調候與貴人、還有「給爸媽的三個相處提醒」</b>。<br>完整解讀，私訊解鎖（往下看）。</div>";
+  // 個人化懸念（露「標題」、藏內文）——讓使用者看到專屬於自己這對的具體鉤子
+  let hook;
+  if(r.liuchong) hook="⚠️ 你們有一個最明顯的卡點（<b>日支六沖</b>）——為什麼一講話就容易上火、怎麼化解？";
+  else if(r.yong && (r.yong.AfavB||r.yong.BfavA)) hook="✨ 你們有命理裡<b>最深的一種合（用神互補）</b>——為什麼說你是他的『恩星』？";
+  else if(r.guiren) hook="🍀 你們命裡藏著一個<b>「天乙貴人」訊號</b>——到底是誰在旺誰？";
+  else if(r.liuhe) hook="💞 你們<b>日支六合</b>、天生對頻——這對你們的相處意味著什麼？";
+  else if(r.tiaohouHit) hook="🔥 命理上你剛好是孩子命裡<b>需要的那份溫度（調候）</b>——這是很深的緣。";
+  else hook="你們的緣分還有好幾層——先天底氣、甜與卡、相處之道。";
+  html+="<div class='teasercut'>"+hook+"<br><b>完整解答，私訊解鎖 👇</b></div>";
+  // 先送一條完整的「相處提醒」當甜頭（讓人先哇一下，再去私訊）
+  const a1=ADVICE_SHISHEN[r.shishenAB];
+  if(a1){ html+="<h3><span class='bar'></span>先送你一個相處提醒（完整版還有兩個）</h3>"
+    +"<div class='a'><b>"+a1[0]+"</b><span>"+a1[1]+"</span></div>"; }
   return html;
 }
 
@@ -1214,6 +1231,11 @@ function loadForm(){ try{ const d=JSON.parse(localStorage.getItem("bz_form")||"n
   ["A_role","B_role"].forEach(k=>{ if(d[k]){ const el=document.querySelector('[data-seg="'+k+'"] [data-v="'+d[k]+'"]'); if(el) el.click(); } });
 }catch(e){} }
 loadForm();
+document.addEventListener("click",function(e){ if(e.target&&e.target.id==="clearBtn"){ e.preventDefault();
+  try{ localStorage.removeItem("bz_form"); }catch(err){}
+  FORM_IDS.forEach(id=>{ if($(id)) $(id).value=""; });
+  alert("已清除這台裝置上暫存的生日資料。");
+}});
 
 function readPerson(prefix){
   const y=parseInt($(prefix+"_y").value,10), m=parseInt($(prefix+"_m").value,10), d=parseInt($(prefix+"_d").value,10);
@@ -1339,7 +1361,7 @@ const HOOK_SS={
   正財:"命理說孩子是我最想守護的心頭肉 💎 難怪我管很兇",
   偏財:"八字說這孩子帶財又帶笑 🍀 是我的開心果",
   正官:"孩子一出生我就被升級成大人 😅 八字蓋章認證",
-  七殺:"命理說我跟孩子是兩個將軍 ⚔️ 最嗆也最挺我",
+  七殺:"命理說我跟孩子像兩個將軍 ⚔️ 會對撞、也最挺彼此",
   正印:"八字說這孩子是來疼我的小天使 🥹 戀家又貼心",
   偏印:"我家有個外冷內熱的小哲學家 🌙 愛你不說出口"
 };
@@ -1358,7 +1380,7 @@ function buildHooks(r){
   else out.push("緣分藏在每天的相處裡 ☕ 慢慢養最扎實");
   // ③ 最該記住的相處心法（依命局關鍵）
   if(r.liuchong) out.push("我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深");
-  else if(r.relA==="子剋父"||r.officerHeavy) out.push("他越頂我越懂：那是想被我看見 👀");
+  else if(r.relA==="子剋父"||r.officerHeavy) out.push("越頂嘴越像我——他不是叛逆，是想被當大人看 😮‍💨");
   else if(r.wsB==="囚"||r.wsB==="死") out.push("八字說孩子先天能量弱 🫶 最需要我穩穩托住");
   else if(r.wsB==="旺") out.push("孩子先天能量旺、超有主見 🚀 給方向別硬壓");
   else if(r.relA==="父生子") out.push("我對他幾乎有求必應 😅 學著放手是我的功課");
@@ -1368,10 +1390,12 @@ function buildHooks(r){
 function shareHook(r){ const L=buildHooks(r); return L[(state.hookIdx||0)%L.length]; }
 function shareCaption(r,nameA,nameB){
   const t=tierOf(r.score);
+  const url=(location.origin&&location.origin.indexOf("http")===0)?location.origin+location.pathname:"https://hsien33.github.io/qinzi-bazi/";
   return pangu("我跟"+nameB+"的八字緣分是 "+r.score+" 分（"+t.tier+"）✨\n"
     +shareHook(r)+"\n\n命理關係【"+r.shishenAB+"】——"+(SHISHEN_PC[r.shishenAB]?SHISHEN_PC[r.shishenAB].one:"")+"。\n\n"
     +"👇 標記另一半或閨蜜，比比看誰跟孩子的緣分分數高～\n"
-    +"也測測你家的（免費・有夠準）👉\n"
+    +"也測測你家的（免費・蠻療癒的）👉 "+url+"\n"
+    +"完整解讀＋給爸媽的相處提醒：IG 追蹤 @jeff.walk2light 私訊「八字」\n"
     +"#八字合不合 #親子緣分 #親子教養 #療癒系 #媽媽日常 #財富煉金術");
 }
 /* 繪製一幀（A=動畫狀態，省略則為靜態完成圖） */
@@ -1456,15 +1480,22 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   lines.forEach((ln,i)=>ctx.fillText(ln, cx, qTop+i*lh));
   ctx.restore();
 
-  // CTA（ctaA 淡入）
+  // CTA（ctaA 淡入）——含回流入口：IG 帳號＋私訊關鍵字（被轉發也找得到路）
   ctx.save(); ctx.globalAlpha=ctaA;
-  const c1=big?H-330:H-176, c2=big?H-274:H-130, c3=big?H-232:H-92;
+  const c1=big?H-356:H-196, c2=big?H-300:H-150, c3=big?H-256:H-112, c4=big?H-214:H-74;
   ctx.fillStyle="#e7c477"; ctx.font='700 '+(big?46:40)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("👀 你跟孩子，是哪一組？", cx, c1);
-  ctx.fillStyle="rgba(246,236,216,.9)"; ctx.font='500 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
+  ctx.fillStyle="rgba(246,236,216,.92)"; ctx.font='500 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("免費測測看・標記另一半比分數", cx, c2);
-  ctx.fillStyle="rgba(246,236,216,.5)"; ctx.font='400 '+(big?24:22)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("八字屬傳統文化・參考娛樂", cx, c3);
+  // 回流列（金底膠囊）
+  ctx.font='700 '+(big?30:26)+'px "Noto Sans TC",sans-serif';
+  const ig="IG @jeff.walk2light ・ 私訊「八字」", iw=ctx.measureText(ig).width+56, ih=big?56:50;
+  roundRect(ctx, cx-iw/2, c3-ih*0.72, iw, ih, ih/2);
+  ctx.fillStyle="rgba(231,196,119,.18)"; ctx.fill();
+  ctx.strokeStyle="rgba(231,196,119,.55)"; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle="#f0d28a"; ctx.textBaseline="middle"; ctx.fillText(ig, cx, c3-ih*0.72+ih/2); ctx.textBaseline="alphabetic";
+  ctx.fillStyle="rgba(246,236,216,.5)"; ctx.font='400 '+(big?23:21)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("八字屬傳統文化・參考娛樂", cx, c4);
   ctx.restore();
 
   // 金色掃光（動態用）
