@@ -502,7 +502,8 @@
         <summary>想看命理是怎麼算的？點開逐項明細</summary>
         <div id="hits"></div>
         <p style="font-size:12px;color:var(--faint);margin:12px 0 6px;line-height:1.7">
-          ＊評分以「中性 50 分」起算，依子平合盤層級加權：<b>日柱六合六沖 ≈ 用神喜忌互補（《滴天髓》扶抑）為最重 ＞ 調候互濟（《窮通寶鑑》）＞ 親子十神星（子女星／父母星）＞ 日主生剋基調 ＞ 古法生肖三合 ＞ 天乙神煞（微調）</b>，每項加減後得最終「緣分分數」。<br>
+          ＊先以子平合盤層級加權算出「相對緣分」：<b>日柱六合六沖 ≈ 用神喜忌互補（《滴天髓》扶抑）為最重 ＞ 調候互濟（《窮通寶鑑》）＞ 親子十神星 ＞ 日主生剋基調 ＞ 古法生肖三合 ＞ 天乙神煞</b>。<br>
+          ＊再依古法「<b>上中下等婚</b>」與合婚慣例換算成百分制呈現（中等婚 60+、上等婚 80+；親子先天有緣，沖剋多的會委婉提醒、不打難堪低分）。<b>相對高低由命理決定，只是把刻度對齊大家熟悉的呈現。</b><br>
           ＊計算以<b>國曆（陽曆）</b>為準，日柱以午夜換日、節氣採通用近似公式（極少數靠近節氣的日子可能差一天）。此為傳統框架的程式化整理，僅供文化參考。
         </p>
       </details>
@@ -727,6 +728,17 @@ function favorSet(p,dmE){
     : {use:dmE, avoid:guan, strong:false};                           // 印不現：取比劫幫身
 }
 
+/* 上中下等婚換算：把「子平理論分（中性50）」對齊古法/商業合婚的百分制呈現。
+   相對高低（沖剋多的確實較低）仍由理論決定，這層只換刻度：
+   中等婚≈60+、上等婚≈80+、親子先天有緣設地板，負面用文字提醒不打難堪低分。 */
+function presentScore(s){
+  let o;
+  if(s<=50) o=67+(s-50)*0.5;          // 中性50→67（中等婚）；以下緩降
+  else if(s<=67) o=67+(s-50)*0.765;   // 50→67、67→80（中等過渡上等）
+  else o=80+(s-67)*0.606;             // 67→80、100→100（上等婚帶，滿分稀有）
+  return Math.max(54,Math.min(100,Math.round(o)));
+}
+
 /* 大運起運順逆：陽男陰女順行、陰男陽女逆行（看年干陰陽 × 性別）。經顧問四源交叉確認。 */
 function daYunDir(yearGan, isMale){
   return (GAN_YY[yearGan]==="陽")===isMale ? "順行" : "逆行";
@@ -875,8 +887,8 @@ function compat(pA,pB){
   else if(SANHE.some(([g])=>g.includes(yzA)&&g.includes(yzB)&&yzA!==yzB)) zodiacRel="三合";
   else if((XING[yzA]&&XING[yzA].includes(yzB))||(XING[yzB]&&XING[yzB].includes(yzA))) zodiacRel="刑";
 
-  // 收尾：直接以理論加權後的分數呈現（不再事後套曲線；好組合自然稀有）
-  score=Math.round(score); if(score>100)score=100; if(score<0)score=0;
+  // 收尾：子平理論分 → 古法「上中下等婚」百分制（相對高低由理論決定，刻度對齊慣例）
+  score=presentScore(Math.round(score));
 
   return {score,hits,relA,eA,eB,sA,sB,complement,dmA,dmB,shishenAB,yong,
     dzA,dzB,liuhe:!!LIUHE[dk],liuchong:(LIUCHONG[dzA]===dzB),
@@ -886,18 +898,16 @@ function compat(pA,pB){
 
 /* ========== 評語區間 ========== */
 function tierOf(s){
-  if(s>=85) return {tier:"親緣極佳",grad:"linear-gradient(135deg,#3f8f5b,#2c6b42)",
+  if(s>=90) return {tier:"親緣極佳",grad:"linear-gradient(135deg,#3f8f5b,#2c6b42)",
     one:"在命理框架裡，你們是磁場特別順的一組——多合局、五行互補，很難得。"};
-  if(s>=70) return {tier:"親緣良好",grad:"linear-gradient(135deg,#c08a2d,#9a6a14)",
+  if(s>=80) return {tier:"親緣良好",grad:"linear-gradient(135deg,#c08a2d,#9a6a14)",
     one:"整體很正向，偶有小摩擦，但都是化得開的小事，別放心上。"};
-  if(s>=55) return {tier:"平順有緣",grad:"linear-gradient(135deg,#6b8fae,#3a6ea5)",
+  if(s>=72) return {tier:"平順有緣",grad:"linear-gradient(135deg,#6b8fae,#3a6ea5)",
     one:"平實卻穩穩的緣分，多聊幾句、多懂一點，就會越來越好。"};
-  if(s>=40) return {tier:"略有摩擦",grad:"linear-gradient(135deg,#b07b9a,#7a4f6a)",
+  if(s>=64) return {tier:"略有摩擦",grad:"linear-gradient(135deg,#b07b9a,#7a4f6a)",
     one:"有幾個明顯的卡點，不是不合，是相處方式還沒對上頻道。"};
-  if(s>=25) return {tier:"需要練習",grad:"linear-gradient(135deg,#c8503a,#9a3a28)",
-    one:"沖刑多了點，要刻意經營——但越是這種，懂了之後越深刻。"};
-  return {tier:"緣分的功課",grad:"linear-gradient(135deg,#5b3a52,#3c2438)",
-    one:"這是一段需要用心修的緣分。記住——再難的盤，都有相處之道。"};
+  return {tier:"需要用心",grad:"linear-gradient(135deg,#c8503a,#9a3a28)",
+    one:"沖刑多了點，要刻意經營——但越是這種，懂了之後越深刻。再難的盤，都有相處之道。"};
 }
 
 /* ========== 命理論述資料庫 ========== */
@@ -964,10 +974,10 @@ function buildReading(r,nameA,nameB){
   let html="";
   // 開場・依分數客製
   let hi;
-  if(r.score>=85) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。但好緣分也要顧，別仗著合就偷懶喔。";
-  else if(r.score>=70) hi=nameA+"和"+nameB+"，你們的底子很好。有點小摩擦很正常，那不是裂縫，是你們還在磨合的證明。";
-  else if(r.score>=55) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分。不轟轟烈烈，但只要你願意多懂他一點，會越來越好。";
-  else if(r.score>=40) hi="我知道你可能有點擔心分數。但聽我說——"+nameA+"和"+nameB+"不是不合，是相處的方式還沒對上頻道。這篇就是要幫你對頻。";
+  if(r.score>=90) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。但好緣分也要顧，別仗著合就偷懶喔。";
+  else if(r.score>=80) hi=nameA+"和"+nameB+"，你們的底子很好。有點小摩擦很正常，那不是裂縫，是你們還在磨合的證明。";
+  else if(r.score>=72) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分。不轟轟烈烈，但只要你願意多懂他一點，會越來越好。";
+  else if(r.score>=64) hi="我知道你可能有點擔心分數。但聽我說——"+nameA+"和"+nameB+"不是不合，是相處的方式還沒對上頻道。這篇就是要幫你對頻。";
   else hi="分數低，先別難過。我帶過太多這種盤，最後都很好。"+nameA+"和"+nameB+"，你們是來互相修練、彼此成全的——這種緣，最深。";
   html+="<p style='background:#f8f1e4;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-weight:600;color:#5b3a52'>"+hi+"</p>";
   // 一、你們是什麼樣的人
@@ -1038,7 +1048,7 @@ function buildReading(r,nameA,nameB){
   stuck.forEach(s=>html+="<p>"+s+"</p>");
 
   // 收尾金句
-  const punch = r.score>=70
+  const punch = r.score>=80
     ? "你們不是運氣好才合得來——<br>是你願意懂他，緣分才會這麼順。"
     : (r.liuchong || r.relA==="子剋父")
     ? "會吵的親子，不是緣分淺，<br>是還沒找到，愛對方的正確方式。"
@@ -1052,10 +1062,10 @@ function buildReadingTeaser(r,nameA,nameB){
   const ta=DAY_MASTER[r.dmA], tb=DAY_MASTER[r.dmB];
   let html="";
   let hi;
-  if(r.score>=85) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。";
-  else if(r.score>=70) hi=nameA+"和"+nameB+"，你們的底子很好，有點小摩擦很正常。";
-  else if(r.score>=55) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分，只要願意多懂他一點，會越來越好。";
-  else if(r.score>=40) hi=nameA+"和"+nameB+"不是不合，是相處的方式還沒對上頻道——這正是要幫你對頻的地方。";
+  if(r.score>=90) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。";
+  else if(r.score>=80) hi=nameA+"和"+nameB+"，你們的底子很好，有點小摩擦很正常。";
+  else if(r.score>=72) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分，只要願意多懂他一點，會越來越好。";
+  else if(r.score>=64) hi=nameA+"和"+nameB+"不是不合，是相處的方式還沒對上頻道——這正是要幫你對頻的地方。";
   else hi=nameA+"和"+nameB+"，你們是來互相修練、彼此成全的——這種緣，最深。";
   html+="<p style='background:#f8f1e4;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-weight:600;color:#5b3a52'>"+hi+"</p>";
   html+="<h3><span class='bar'></span>你們，是兩種不一樣的材質</h3>";
@@ -1120,7 +1130,7 @@ function adviceThird(r){
   if(r.complement) return ["你們是彼此的補位，善用它","你們五行剛好互補，天生能補對方的不足。他卡住的地方，常常正是你的強項——別嫌他，伸手拉他一把，這就是緣分的用處。"];
   if(r.tiaohouHit) return ["你就是他的調候，別吝嗇你的溫度","命理上你正好補了孩子命局的寒暖。多給他你最擅長的那一面——你的擁抱、你的穩定，對他來說就是最補的能量。"];
   if(r.guiren) return ["珍惜這份『貴人』的緣","你們命裡帶著貴人緣，這是很深的福分。別把它當理所當然——常說謝謝、常把愛說出口，好緣分也要常常澆水。"];
-  if(r.score>=70) return ["把好緣分，存進日常","你們底子很好，別浪費。每天十分鐘，不講功課、不講規矩，只聊他今天開不開心。好關係不是大事堆出來的，是這些小時刻存出來的。"];
+  if(r.score>=80) return ["把好緣分，存進日常","你們底子很好，別浪費。每天十分鐘，不講功課、不講規矩，只聊他今天開不開心。好關係不是大事堆出來的，是這些小時刻存出來的。"];
   return ["從一句『我懂了』開始","這段緣分需要你多用點心，但別怕。今天就找個機會，認真聽他講一件事，然後說一句『我懂了』——不急著給建議。被聽懂的孩子，才會願意靠近你。"];
 }
 function buildAdvice(r,nameA,nameB){
@@ -1344,7 +1354,7 @@ function buildHooks(r){
   else if(r.tiaohouHit) out.push("命理說我剛好是孩子命裡需要的溫度 🔥 暖哭");
   else if(r.liuhe) out.push("八字說我們日支六合 💞 天生一個眼神就懂");
   else if(r.complement) out.push("我們五行剛好互補 🧩 我缺的他剛好有");
-  else if(r.score>=85) out.push("八字緣分分數爆表 ✨ 這種好命不是人人有");
+  else if(r.score>=90) out.push("八字緣分分數爆表 ✨ 這種好命不是人人有");
   else out.push("緣分藏在每天的相處裡 ☕ 慢慢養最扎實");
   // ③ 最該記住的相處心法（依命局關鍵）
   if(r.liuchong) out.push("我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深");
