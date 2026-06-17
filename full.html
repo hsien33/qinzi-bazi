@@ -195,7 +195,10 @@
   .scorecard .num{font-size:78px;font-weight:900;line-height:1;letter-spacing:1px;
     font-family:"Noto Serif TC",serif;font-variant-numeric:tabular-nums;text-shadow:0 3px 14px rgba(0,0,0,.18)}
   .scorecard .num small{font-size:22px;opacity:.8;font-weight:600}
-  .scorecard .verdict{font-size:21px;font-weight:700;margin-top:8px;letter-spacing:2px}
+  .scorecard .ctype{display:inline-block;margin:12px auto 2px;padding:8px 20px;border-radius:999px;
+    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.32);
+    font-size:19px;font-weight:800;letter-spacing:1.5px;box-shadow:0 3px 10px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.3)}
+  .scorecard .verdict{font-size:15px;font-weight:600;margin-top:9px;letter-spacing:2px;opacity:.92}
   .scorecard .oneline{font-size:14.5px;opacity:.95;margin-top:8px;line-height:1.8;max-width:26em;
     margin-left:auto;margin-right:auto;text-wrap:balance}
   .scorecard .meter{height:9px;border-radius:999px;background:rgba(255,255,255,.25);margin:16px auto 0;max-width:320px;overflow:hidden}
@@ -433,10 +436,11 @@
       <div class="scorecard" id="scoreCard">
         <div class="tier" id="r_tier"></div>
         <div class="num" id="r_score">--<small>分</small></div>
+        <div class="ctype" id="r_title"></div>
         <div class="verdict" id="r_verdict"></div>
         <div class="oneline" id="r_oneline"></div>
         <div class="meter"><i id="r_meter"></i></div>
-        <div class="scnote">分數採古法「上中下等婚」刻度（中等婚 60+、上等婚 80+）——只是骨架，下面的「相處之道」才是重點</div>
+        <div class="scnote">分數採古法「上中下等婚」高分刻度（人人有面子）；你們是哪一「型」，才是這份緣分的特色</div>
       </div>
 
       <div class="charts">
@@ -754,11 +758,11 @@ function favorSet(p,dmE){
    相對高低（沖剋多的確實較低）仍由理論決定，這層只換刻度：
    中等婚≈60+、上等婚≈80+、親子先天有緣設地板，負面用文字提醒不打難堪低分。 */
 function presentScore(s){
+  // 親子工具走「人人有面子＋稱號做差異化」：分數開高（巴納姆心理錨點 ≈85），稀有性交給稱號不交給分數
   let o;
-  if(s<=50) o=67+(s-50)*0.5;          // 中性50→67（中等婚）；以下緩降
-  else if(s<=67) o=67+(s-50)*0.765;   // 50→67、67→80（中等過渡上等）
-  else o=80+(s-67)*0.606;             // 67→80、100→100（上等婚帶，滿分稀有）
-  return Math.max(60,Math.min(100,Math.round(o)));  // 地板 60（中等婚，不打難堪低分）
+  if(s<=67) o=78+(s-50)*0.47;   // 中性→78、中位數→86
+  else o=86+(s-67)*0.5;          // 高分段：90+ 不少、滿分仍稀有可達
+  return Math.max(78,Math.min(100,Math.round(o)));  // 地板 78（親子先天有緣，不打難堪低分）
 }
 
 /* 大運起運順逆：陽男陰女順行、陰男陽女逆行（看年干陰陽 × 性別）。經顧問四源交叉確認。 */
@@ -889,10 +893,10 @@ function compat(pA,pB){
     tiaohouHit={dir:"BtoA",need:thA.need};
   }
 
-  // 維度 I：天乙貴人互帶——命中最尊貴的吉星，彼此為貴人
+  // 維度 I：天乙貴人——只取「對方貴人正落在我的日支」（最貼身、最有意義的位置），避免幾乎人人有
   const guiA=TIANYI[dmA]||[], guiB=TIANYI[dmB]||[];
-  const aGuiInB=guiA.some(z=>zB.includes(z)); // 大人的貴人落在孩子盤→孩子是大人的貴人
-  const bGuiInA=guiB.some(z=>zA.includes(z)); // 孩子的貴人落在大人盤→大人是孩子的貴人
+  const aGuiInB=guiA.includes(dzB); // 大人的貴人＝孩子的日支 → 孩子是大人的貴人
+  const bGuiInA=guiB.includes(dzA); // 孩子的貴人＝大人的日支 → 大人是孩子的貴人
   let guiren=null;
   if(aGuiInB && bGuiInA){
     add(6,"pos","天乙貴人・互為貴人","命書裡最尊貴的吉星——你們竟然「互為貴人」。你是他的靠山，他也是你的福星，這是很深的福分。"); guiren="both";
@@ -909,11 +913,12 @@ function compat(pA,pB){
   else if(SANHE.some(([g])=>g.includes(yzA)&&g.includes(yzB)&&yzA!==yzB)) zodiacRel="三合";
   else if((XING[yzA]&&XING[yzA].includes(yzB))||(XING[yzB]&&XING[yzB].includes(yzA))) zodiacRel="刑";
 
-  // 孩子的讀書/考運訊號（文昌星＋印星）——給「中學生家長」客群的鉤子，不直接計分
+  // 孩子的「學習風格」訊號（複合判斷，只說正面，絕不下「會不會讀書」的可證偽斷言）
   const wcB=WENCHANG[dmB], hasWC=zB.includes(wcB);
   let yinB=null; ELEMS.forEach(x=>{ if(SHENG[x]===eB) yinB=x; });
   const totalB=ELEMS.reduce((a,x)=>a+sB[x],0)||1;
-  const study={wc:wcB, hasWC, yinStrong:(sB[yinB]>totalB*0.20)};
+  const study={hasWC, yinStrong:(sB[yinB]>totalB*0.20), foodStrong:(sB[SHENG[eB]]>totalB*0.20),
+    officerStrong:(officer>=2), dmStrong:(wsB==="旺"||wsB==="相")};
 
   // 收尾：子平理論分 → 古法「上中下等婚」百分制（相對高低由理論決定，刻度對齊慣例）
   score=presentScore(Math.round(score));
@@ -924,18 +929,33 @@ function compat(pA,pB){
     zodiacA:ZHI_ZODIAC[yzA],zodiacB:ZHI_ZODIAC[yzB],zodiacRel};
 }
 
+/* 親子「緣分類型」稱號——可截圖、可對話的身分標籤；差異化靠這個（不靠壓低分數）。
+   依命局最突出的訊號給，全部正向框架（連沖剋都翻成正面）。 */
+function coupleTitle(r){
+  if(r.yong && r.yong.AfavB && r.yong.BfavA) return {name:"互為恩星型",emo:"🌟",desc:"在命理喜用上彼此成全——難得的天作之合"};
+  if(r.yong && (r.yong.AfavB||r.yong.BfavA)) return {name:"恩星守護型",emo:"🛡️",desc:"一方正好補上另一方命裡最需要的那塊"};
+  if(r.liuhe) return {name:"默契神隊友型",emo:"💞",desc:"日支六合、天生對頻，一個眼神就懂"};
+  if(r.tiaohouHit) return {name:"冷暖相濟型",emo:"🔥",desc:"你剛好是他命裡需要的那份溫度"};
+  if(r.relA==="子剋父"||r.officerHeavy) return {name:"並肩戰友型",emo:"⚔️",desc:"棋逢對手、針鋒相對，卻最挺彼此"};
+  if(r.liuchong) return {name:"越吵越親型",emo:"🧲",desc:"像磁鐵般互彈，但和好後感情更深"};
+  if(r.complement) return {name:"互補神隊友型",emo:"🧩",desc:"你缺的他剛好有，天生互相補位"};
+  if(r.relA==="父生子") return {name:"活水源頭型",emo:"💧",desc:"你是他天生的養分，給得自然"};
+  if(r.relA==="子生父") return {name:"小棉襖型",emo:"🧸",desc:"這孩子是來疼你的，貼心又暖"};
+  if(r.relA==="同") return {name:"同款靈魂型",emo:"🪞",desc:"同一種材質，最懂彼此也最像"};
+  if(r.guiren) return {name:"彼此貴人型",emo:"🍀",desc:"命裡互帶貴氣，是彼此的福星"};
+  return {name:"細水長流型",emo:"🌱",desc:"不轟轟烈烈，靠日子慢慢養出來的緣"};
+}
+
 /* ========== 評語區間 ========== */
 function tierOf(s){
-  if(s>=90) return {tier:"親緣極佳",grad:"linear-gradient(135deg,#3f8f5b,#2c6b42)",
+  if(s>=93) return {tier:"親緣・極佳",grad:"linear-gradient(135deg,#3f8f5b,#2c6b42)",
     one:"在命理框架裡，你們是磁場特別順的一組——多合局、五行互補，很難得。"};
-  if(s>=80) return {tier:"親緣良好",grad:"linear-gradient(135deg,#c08a2d,#9a6a14)",
+  if(s>=86) return {tier:"親緣・很好",grad:"linear-gradient(135deg,#c08a2d,#9a6a14)",
     one:"整體很正向，偶有小摩擦，但都是化得開的小事，別放心上。"};
-  if(s>=72) return {tier:"平順有緣",grad:"linear-gradient(135deg,#6b8fae,#3a6ea5)",
-    one:"平實卻穩穩的緣分，多聊幾句、多懂一點，就會越來越好。"};
-  if(s>=64) return {tier:"略有摩擦",grad:"linear-gradient(135deg,#b07b9a,#7a4f6a)",
-    one:"有幾個明顯的卡點，不是不合，是相處方式還沒對上頻道。"};
-  return {tier:"需要用心",grad:"linear-gradient(135deg,#c8503a,#9a3a28)",
-    one:"沖刑多了點，要刻意經營——但越是這種，懂了之後越深刻。再難的盤，都有相處之道。"};
+  if(s>=81) return {tier:"親緣・順暢",grad:"linear-gradient(135deg,#3a6ea5,#2c5a86)",
+    one:"穩穩的好緣分，多聊幾句、多懂一點，就會越來越靠近。"};
+  return {tier:"親緣・溫潤",grad:"linear-gradient(135deg,#8a6fae,#5f4f8a)",
+    one:"屬於慢慢加溫的一型——不轟轟烈烈，卻會在日子裡越養越深。"};
 }
 
 /* ========== 命理論述資料庫 ========== */
@@ -1002,11 +1022,10 @@ function buildReading(r,nameA,nameB){
   let html="";
   // 開場・依分數客製
   let hi;
-  if(r.score>=90) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。但好緣分也要顧，別仗著合就偷懶喔。";
-  else if(r.score>=80) hi=nameA+"和"+nameB+"，你們的底子很好。有點小摩擦很正常，那不是裂縫，是你們還在磨合的證明。";
-  else if(r.score>=72) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分。不轟轟烈烈，但只要你願意多懂他一點，會越來越好。";
-  else if(r.score>=64) hi="我知道你可能有點擔心分數。但聽我說——"+nameA+"和"+nameB+"不是不合，是相處的方式還沒對上頻道。這篇就是要幫你對頻。";
-  else hi="分數低，先別難過。我帶過太多這種盤，最後都很好。"+nameA+"和"+nameB+"，你們是來互相修練、彼此成全的——這種緣，最深。";
+  if(r.score>=93) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。但好緣分也要顧，別仗著合就偷懶喔。";
+  else if(r.score>=86) hi=nameA+"和"+nameB+"，你們的底子很好。有點小摩擦很正常，那不是裂縫，是你們還在磨合的證明。";
+  else if(r.score>=81) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分。不轟轟烈烈，但只要你願意多懂他一點，會越來越好。";
+  else hi=nameA+"和"+nameB+"，你們屬於慢慢加溫的一型——一開始或許需要多一點耐心，但這種緣，往往是越往後越懂、越久越深。";
   html+="<p style='background:#f8f1e4;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-weight:600;color:#5b3a52'>"+hi+"</p>";
   // 一、你們是什麼樣的人
   html+="<h3><span class='bar'></span>你們，是兩種不一樣的材質</h3>";
@@ -1038,12 +1057,22 @@ function buildReading(r,nameA,nameB){
     else if(r.wsB==="旺") html+="<p>孩子先天能量旺、很有主見——<span class='hl'>與其壓他，不如給他方向</span>，他會跑得比你想像的更遠。</p>";
   }
 
-  // 孩子的讀書 / 考運訊號（文昌星＋印星）——中學生家長最在意的一塊
+  // 孩子的「學習風格」——只說正面、依命局實際強項給「怎麼陪」，絕不下「會不會讀書」的可證偽斷言
   if(r.study){
-    html+="<h3><span class='bar'></span>孩子的讀書・考運訊號 📖</h3>";
-    if(r.study.hasWC) html+="<p>好消息——<span class='hl'>"+nameB+"命帶「文昌星」</span>（讀書、考運、文采之星）。他天生對學習、文字、表達有一種靈光，適合往<b>需要動腦、需要表達</b>的方向走。<br>陪讀重點：<span class='hl'>給方法、給肯定，別只盯分數</span>——他的潛力在「理解」，不在「硬背」。</p>";
-    else html+="<p>"+nameB+"命裡<span class='hl'>沒有現成的「文昌星」</span>，但這完全不代表不會讀書——文昌只是「天生的讀書靈光」。沒有文昌的孩子，靠的是<span class='hl'>規律、興趣與陪伴</span>：找到他有興趣的一科當突破口，比逼他全科平均更有效。</p>";
-    if(r.study.yinStrong) html+="<p>另外，他命裡<span class='hl'>印星偏旺</span>（學業與長輩貴人之星）——讀書路上容易遇到願意提攜他的老師或貴人，也很吃「<b>被肯定就更努力</b>」這套。多稱讚，會比多責備有用。</p>";
+    html+="<h3><span class='bar'></span>"+nameB+"的學習風格・怎麼陪最對 📖</h3>";
+    let pts=[];
+    if(r.study.hasWC) pts.push("命帶<span class='hl'>文昌星</span>（讀書、文采、考運之星）——對文字、表達、考試有天生的靈光，吃「理解＋活用」這套");
+    if(r.study.yinStrong) pts.push("<span class='hl'>印星旺</span>（學習力與貴人之星）——吸收力好、容易遇到提攜他的老師，超吃「被肯定就更努力」");
+    if(r.study.foodStrong) pts.push("<span class='hl'>食傷旺</span>——聰明、反應快、表達好，適合用「為什麼」啟發，別逼他死背");
+    if(r.study.officerStrong) pts.push("<span class='hl'>官星顯</span>——自律、坐得住、守規矩，是能按部就班把事做好的類型");
+    if(r.study.dmStrong) pts.push("<span class='hl'>日主有力</span>——有衝勁、扛得住壓力，給他目標他會自己往前衝");
+    if(pts.length){
+      html+="<p>"+nameB+"命裡的學習優勢在這幾塊：</p><ul style='margin:6px 0 10px;padding-left:20px'>"
+        +pts.slice(0,3).map(p=>"<li style='margin:5px 0;line-height:1.85'>"+p+"</li>").join("")+"</ul>"
+        +"<p><span class='hl'>陪讀重點：順著他的強項給方法、給肯定，別只盯分數。</span>每個孩子的讀書天賦長在不同地方——找到他的那一塊，他就會發光。</p>";
+    } else {
+      html+="<p>"+nameB+"的學習天賦比較「<span class='hl'>慢熱、藏得深</span>」——不是一眼看得出的考試型，而是<b>找到真正有興趣的領域才會爆發</b>的那種。陪他的關鍵：別急著比較、別只盯成績，<span class='hl'>幫他找到「想學的那件事」</span>，動力一來，他自己會追上去。</p>";
+    }
   }
 
   // 生肖白話（大家最熟悉的那層）
@@ -1100,11 +1129,10 @@ function buildReadingTeaser(r,nameA,nameB){
   const ta=DAY_MASTER[r.dmA], tb=DAY_MASTER[r.dmB];
   let html="";
   let hi;
-  if(r.score>=90) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。";
-  else if(r.score>=80) hi=nameA+"和"+nameB+"，你們的底子很好，有點小摩擦很正常。";
-  else if(r.score>=72) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分，只要願意多懂他一點，會越來越好。";
-  else if(r.score>=64) hi=nameA+"和"+nameB+"不是不合，是相處的方式還沒對上頻道——這正是要幫你對頻的地方。";
-  else hi=nameA+"和"+nameB+"，你們是來互相修練、彼此成全的——這種緣，最深。";
+  if(r.score>=93) hi="先恭喜你——"+nameA+"和"+nameB+"，是我看了會微微一笑的那種緣分。";
+  else if(r.score>=86) hi=nameA+"和"+nameB+"，你們的底子很好，有點小摩擦很正常。";
+  else if(r.score>=81) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分，只要願意多懂他一點，會越來越好。";
+  else hi=nameA+"和"+nameB+"，你們屬於慢慢加溫的一型——越往後越懂，越久越深。";
   html+="<p style='background:#f8f1e4;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-weight:600;color:#5b3a52'>"+hi+"</p>";
   html+="<h3><span class='bar'></span>你們，是兩種不一樣的材質</h3>";
   html+="<p>"+nameA+"，日主<b>"+r.dmA+"</b>，是<span class='hl'>"+ta.img+"</span>（五行屬"+r.eA+"）——"+ta.t+"</p>";
@@ -1117,7 +1145,8 @@ function buildReadingTeaser(r,nameA,nameB){
   }
   // 個人化懸念（露「標題」、藏內文）——讓使用者看到專屬於自己這對的具體鉤子
   let hook;
-  if(r.study && r.study.hasWC) hook="📖 好消息——你家孩子<b>命帶『文昌星』</b>（讀書、考運、文采之星）！怎麼陪讀最能發揮？";
+  if(r.study && r.study.hasWC) hook="📖 你家孩子<b>命帶『文昌星』</b>（讀書、文采、考運之星）！怎麼陪最能發揮？";
+  else if(r.study && (r.study.yinStrong||r.study.foodStrong||r.study.officerStrong)) hook="📖 你家孩子的<b>學習優勢藏在哪一塊</b>？怎麼陪讀最對味？";
   else if(r.liuchong) hook="⚠️ 你們有一個最明顯的卡點（<b>日支六沖</b>）——為什麼一講話就容易上火、怎麼化解？";
   else if(r.yong && (r.yong.AfavB||r.yong.BfavA)) hook="✨ 你們有命理裡<b>最深的一種合（用神互補）</b>——為什麼說你是他的『恩星』？";
   else if(r.guiren) hook="🍀 你們命裡藏著一個<b>「天乙貴人」訊號</b>——到底是誰在旺誰？";
@@ -1317,8 +1346,10 @@ function runCompat(){
     },22);
     setTimeout(()=>{ clearInterval(iv); el.innerHTML=target+"<small>分</small>"; },800);
   })(r.score);
+  const ct=coupleTitle(r);
+  $("r_title").textContent=ct.emo+" "+ct.name;
   $("r_verdict").textContent=t.tier;
-  $("r_oneline").textContent=t.one;
+  $("r_oneline").textContent=ct.desc;
   setTimeout(()=>{ $("r_meter").style.width=r.score+"%"; },120);
   $("r_meter").style.cssText="width:0;transition:width 1s ease .1s";
   $("r_names").textContent=nameA+" ＆ "+nameB;
@@ -1414,7 +1445,7 @@ function buildHooks(r){
   else if(r.tiaohouHit) out.push("命理說我剛好是孩子命裡需要的溫度 🔥 暖哭");
   else if(r.liuhe) out.push("八字說我們日支六合 💞 天生一個眼神就懂");
   else if(r.complement) out.push("我們五行剛好互補 🧩 我缺的他剛好有");
-  else if(r.score>=90) out.push("八字緣分分數爆表 ✨ 這種好命不是人人有");
+  else if(r.score>=94) out.push("八字緣分分數爆表 ✨ 這種好命不是人人有");
   else out.push("緣分藏在每天的相處裡 ☕ 慢慢養最扎實");
   // ③ 最該記住的相處心法（依命局關鍵）
   if(r.liuchong) out.push("我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深");
@@ -1429,8 +1460,9 @@ function shareHook(r){ const L=buildHooks(r); return L[(state.hookIdx||0)%L.leng
 function shareCaption(r,nameA,nameB){
   const t=tierOf(r.score);
   const url=(location.origin&&location.origin.indexOf("http")===0)?location.origin+location.pathname:"https://hsien33.github.io/qinzi-bazi/";
-  return pangu("我跟"+nameB+"的八字緣分是 "+r.score+" 分（"+t.tier+"）✨\n"
-    +shareHook(r)+"\n\n命理關係【"+r.shishenAB+"】——"+(SHISHEN_PC[r.shishenAB]?SHISHEN_PC[r.shishenAB].one:"")+"。\n\n"
+  const ct=coupleTitle(r);
+  return pangu("我跟"+nameB+"的八字緣分是 "+r.score+" 分・"+ct.emo+ct.name+" ✨\n"
+    +ct.desc+"\n"+shareHook(r)+"\n\n命理關係【"+r.shishenAB+"】——"+(SHISHEN_PC[r.shishenAB]?SHISHEN_PC[r.shishenAB].one:"")+"。\n\n"
     +"👇 標記另一半或閨蜜，比比看誰跟孩子的緣分分數高～\n"
     +"也測測你家的（免費・蠻療癒的）👉 "+url+"\n"
     +"完整解讀＋給爸媽的相處提醒：IG 追蹤 @jeff.walk2light 私訊「八字」\n"
@@ -1490,10 +1522,11 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   ctx.fillStyle="#e7c477"; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("分 ／ 100", cx, cy+(big?118:96));
 
-  // 評語 + 徽章（midA 淡入）
+  // 稱號（主標）+ 徽章（midA 淡入）
   ctx.save(); ctx.globalAlpha=midA;
-  ctx.fillStyle="#fff"; ctx.font='700 '+(big?56:48)+'px "Noto Serif TC",serif';
-  ctx.fillText(t.tier, cx, cy+R+(big?96:84));
+  const ct=coupleTitle(r);
+  ctx.fillStyle="#fff"; ctx.font='700 '+(big?60:50)+'px "Noto Serif TC",serif';
+  ctx.fillText(ct.emo+" "+ct.name, cx, cy+R+(big?96:84));
   const badge="命理關係・"+r.shishenAB;
   ctx.font='700 '+(big?40:36)+'px "Noto Sans TC",sans-serif';
   const bw=ctx.measureText(badge).width+80, by=cy+R+(big?132:116), bh=big?76:68;
