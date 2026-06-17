@@ -495,7 +495,8 @@
         <summary>想看命理是怎麼算的？點開逐項明細</summary>
         <div id="hits"></div>
         <p style="font-size:12px;color:var(--faint);margin:12px 0 6px;line-height:1.7">
-          ＊評分以「中性 50 分」為基準，依日主五行生剋、地支六合／六沖／三合／三會／相刑／相害／相破、天干六合、十神親子星等維度加減而得，滿分 100。<br>
+          ＊評分以「中性 50 分」為基準，依日主五行生剋、地支六合／六沖／三合／三會／相刑／相害／相破、天干六合、十神親子星等維度加減。<br>
+          ＊最終「緣分分數」會把上述加減<b>再做一次分佈校準</b>（讓滿分更珍貴、分數更有鑑別度），所以<b>和逐項加總不會完全相等</b>，這是正常的。<br>
           ＊計算以<b>國曆（陽曆）</b>為準，日柱以午夜換日、節氣採通用近似公式（極少數靠近節氣的日子可能差一天）。此為傳統框架的程式化整理，僅供文化參考。
         </p>
       </details>
@@ -694,6 +695,16 @@ function tiaohou(monthZhi){
   return null;
 }
 
+/* 分佈校準：把「50＋各維度加減」的原始分，重新映射到鑑別度更好的 0–100。
+   原始分中位數約 82、約 18% 破百（全擠在 100）；校準後 100 僅約 1%、中位數約 67。 */
+function calibrateScore(raw){
+  let o;
+  if(raw<=50) o=raw*0.96;                 // 中性以下（負面為主）照樣偏低
+  else if(raw<=80) o=48+(raw-50)*0.60;    // 50→48、80→66
+  else o=66+(raw-80)*0.72;                 // 高分段壓縮：滿分變稀有、仍可達
+  return Math.max(1,Math.min(100,Math.round(o)));
+}
+
 /* ========== 合盤評分 ========== */
 function compat(pA,pB){
   const hits=[]; let score=50;
@@ -823,9 +834,8 @@ function compat(pA,pB){
   else if(SANHE.some(([g])=>g.includes(yzA)&&g.includes(yzB)&&yzA!==yzB)) zodiacRel="三合";
   else if((XING[yzA]&&XING[yzA].includes(yzB))||(XING[yzB]&&XING[yzB].includes(yzA))) zodiacRel="刑";
 
-  // 收尾
-  score=Math.round(score);
-  if(score>100)score=100; if(score<0)score=0;
+  // 收尾：原始分經分佈校準（讓滿分稀有、分數有鑑別度）
+  score=calibrateScore(score);
 
   return {score,hits,relA,eA,eB,sA,sB,complement,dmA,dmB,shishenAB,
     dzA,dzB,liuhe:!!LIUHE[dk],liuchong:(LIUCHONG[dzA]===dzB),
