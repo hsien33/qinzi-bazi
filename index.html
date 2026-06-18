@@ -233,25 +233,20 @@
   /* 五行能量（白話版） */
   .wx2-intro{font-size:13.5px;color:var(--soft);line-height:1.85;margin-bottom:12px}
   .wx2-intro b{color:var(--plum-d)}
-  .wx2-card{background:linear-gradient(180deg,#fffdf8,#f5ecda);border:1px solid var(--gold-l);border-radius:15px;
-    padding:15px 17px;margin:12px 0;box-shadow:0 6px 18px rgba(120,90,50,.08)}
-  .wx2-name{font-size:14.5px;font-weight:700;color:var(--plum-d);margin-bottom:11px}
-  .wx2-row{display:flex;align-items:center;gap:10px;margin:9px 0}
-  .wx2-el{flex:0 0 20px;font-size:15px;font-weight:700;text-align:center}
-  .wx2-track{flex:1;height:21px;border-radius:999px;
-    background:linear-gradient(180deg,#d7caae,#ece2ce);
-    box-shadow:inset 0 2px 5px rgba(90,60,30,.22), inset 0 -1px 0 rgba(255,255,255,.55)}
-  .wx2-track i{display:block;height:100%;min-width:16px;border-radius:999px;position:relative;
-    transition:width .8s cubic-bezier(.2,.8,.2,1);
-    background-image:linear-gradient(180deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.12) 40%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.28) 100%);
-    box-shadow:0 2px 7px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 6px rgba(255,255,255,.15)}
-  .wx2-track i::after{content:"";position:absolute;left:5%;right:5%;top:13%;height:34%;border-radius:999px;
-    background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));pointer-events:none}
-  .wx2-pct{flex:0 0 40px;text-align:right;font-size:12.5px;color:var(--soft);font-variant-numeric:tabular-nums}
-  .wtag{flex:0 0 auto;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(0,0,0,.08)}
-  .wtag.hot{background:linear-gradient(180deg,#f7e0c8,#eecaa6);color:#b5502f}
-  .wtag.low{background:linear-gradient(180deg,#e6ecf1,#d3dde5);color:#5a6b78}
+  .wx2-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:12px 0}
+  @media(max-width:540px){.wx2-grid{grid-template-columns:1fr;gap:11px}}
+  .wx2-card{position:relative;border-radius:17px;padding:13px 8px 9px;text-align:center;
+    background:radial-gradient(125% 120% at 50% 26%,#301d33 0%,#20142200 0%,#1a111c 78%),
+      radial-gradient(120% 120% at 50% 30%,#2c1b2f,#160e18);
+    border:1px solid rgba(231,196,119,.30);
+    box-shadow:0 10px 26px rgba(50,24,44,.22), inset 0 1px 0 rgba(231,196,119,.16), inset 0 0 34px rgba(231,196,119,.05)}
+  .wx2-name{font-size:13px;font-weight:700;color:var(--gold-l);letter-spacing:2px;margin:0 0 1px}
+  .wx2-svg{width:100%;height:auto;display:block;overflow:visible}
+  .wx2-legend{display:flex;justify-content:center;gap:5px 11px;flex-wrap:wrap;margin-top:6px;
+    font-size:11px;color:rgba(246,236,216,.62);font-variant-numeric:tabular-nums}
+  .wx2-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:1px;
+    box-shadow:0 0 5px currentColor}
+  .wx2-legend b{color:#f0d28a;font-weight:700}
   .wx2-take{font-size:13.5px;color:#4a3c2c;line-height:1.95;margin-top:12px;background:#f8f1e4;border-radius:11px;padding:12px 15px}
   .wx2-take b{color:var(--plum-d)}
   .rnote{margin-top:14px;font-size:12px;color:var(--faint);line-height:1.7;background:#fbf6ec;border:1px dashed #e3d4b6;
@@ -1236,20 +1231,42 @@ function renderChart(el,title,sub,p){
 
 /* ========== 五行條 ========== */
 function renderWuxing(sA,sB,nameA,nameB){
-  const block=(s,name)=>{
+  const JEWEL={木:"#4fc985",火:"#ef6a4f",土:"#e6b34e",金:"#dce1e8",水:"#4f97e4"};
+  const cx=124,cy=118,maxR=76;
+  const ang=i=>(-90+i*72)*Math.PI/180;
+  const pt=(r,i)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
+  const block=(s,name,uid)=>{
     const mx=Math.max(...ELEMS.map(x=>s[x]))||1;
     const tot=ELEMS.reduce((a,x)=>a+s[x],0)||1;
-    const st=strongest(s), wk=weakest(s);
-    const rows=ELEMS.map(e=>{
-      const pct=Math.round(s[e]/tot*100);
-      const w=Math.max(5,Math.round(s[e]/mx*100));
-      const tag=e===st?"<span class='wtag hot'>最多</span>":(e===wk?"<span class='wtag low'>最少</span>":"");
-      const glow="0 2px 7px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.6),0 0 10px "+E_COLOR[e]+"55";
-      return "<div class='wx2-row'><span class='wx2-el' style='color:"+E_COLOR[e]+"'>"+e+"</span>"
-        +"<span class='wx2-track'><i style='width:"+w+"%;background-color:"+E_COLOR[e]+";box-shadow:"+glow+"'></i></span>"
-        +"<span class='wx2-pct'>"+pct+"%</span>"+tag+"</div>";
-    }).join("");
-    return "<div class='wx2-card'><div class='wx2-name'>"+name+"</div>"+rows+"</div>";
+    const st=strongest(s),wk=weakest(s);
+    let grid="",spokes="",dots="",labels="";
+    [0.25,0.5,0.75,1].forEach(k=>{
+      const p=ELEMS.map((e,i)=>pt(maxR*k,i).map(n=>n.toFixed(1)).join(",")).join(" ");
+      grid+="<polygon points='"+p+"' fill='none' stroke='rgba(231,196,119,"+(k===1?0.40:0.15)+")' stroke-width='"+(k===1?1.2:0.7)+"'/>";
+    });
+    ELEMS.forEach((e,i)=>{const a=pt(maxR,i);spokes+="<line x1='"+cx+"' y1='"+cy+"' x2='"+a[0].toFixed(1)+"' y2='"+a[1].toFixed(1)+"' stroke='rgba(231,196,119,.12)' stroke-width='.7'/>";});
+    const dp=ELEMS.map((e,i)=>pt(Math.max(0.05,s[e]/mx)*maxR,i));
+    const dstr=dp.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+    ELEMS.forEach((e,i)=>{
+      const dx=dp[i][0],dy=dp[i][1],col=JEWEL[e];
+      if(e===st)dots+="<circle cx='"+dx.toFixed(1)+"' cy='"+dy.toFixed(1)+"' r='8.5' fill='none' stroke='"+col+"' stroke-width='1' opacity='.45'/>";
+      dots+="<circle cx='"+dx.toFixed(1)+"' cy='"+dy.toFixed(1)+"' r='"+(e===st?5:(e===wk?2.8:3.7))+"' fill='"+col+"' filter='url(#wg"+uid+")' opacity='"+(e===wk?.8:1)+"'/>";
+      const lp=pt(maxR+17,i),lx=lp[0],ly=lp[1];
+      const an=i===0?"middle":((i===1||i===2)?"start":"end");
+      const pct=Math.round(s[e]/tot*100),star=e===st?" ★":"";
+      labels+="<text x='"+lx.toFixed(1)+"' y='"+(ly-2).toFixed(1)+"' text-anchor='"+an+"' font-family='Noto Serif TC,serif' font-size='14' font-weight='700' fill='"+col+"'>"+e+star+"</text>";
+      labels+="<text x='"+lx.toFixed(1)+"' y='"+(ly+12).toFixed(1)+"' text-anchor='"+an+"' font-family='Noto Sans TC,sans-serif' font-size='10.5' font-weight='600' fill='"+(e===st?"#f3d790":"rgba(231,196,119,.6)")+"'>"+pct+"%</text>";
+    });
+    const defs="<defs><radialGradient id='wf"+uid+"' cx='50%' cy='46%' r='62%'><stop offset='0%' stop-color='rgba(231,196,119,.40)'/><stop offset='100%' stop-color='rgba(231,196,119,.08)'/></radialGradient>"
+      +"<filter id='wg"+uid+"' x='-60%' y='-60%' width='220%' height='220%'><feGaussianBlur stdDeviation='1.8' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs>";
+    const legend=ELEMS.map(e=>"<span><i style='color:"+JEWEL[e]+"'></i>"+e+" <b>"+Math.round(s[e]/tot*100)+"%</b></span>").join("");
+    return "<div class='wx2-card'><div class='wx2-name'>"+name+"</div>"
+      +"<svg class='wx2-svg' viewBox='0 0 248 214' role='img' aria-label='"+name+"五行能量五角圖'>"+defs
+      +"<circle cx='"+cx+"' cy='"+cy+"' r='"+(maxR+7)+"' fill='none' stroke='rgba(231,196,119,.10)' stroke-width='.8'/>"
+      +grid+spokes
+      +"<polygon points='"+dstr+"' fill='url(#wf"+uid+")' stroke='#e7c477' stroke-width='1.5' stroke-linejoin='round' filter='url(#wg"+uid+")'/>"
+      +dots+"<circle cx='"+cx+"' cy='"+cy+"' r='1.8' fill='#e7c477'/>"+labels+"</svg>"
+      +"<div class='wx2-legend'>"+legend+"</div></div>";
   };
   const stA=strongest(sA),wkA=weakest(sA),stB=strongest(sB),wkB=weakest(sB);
   let take="<b>"+name1Take(nameA,stA,wkA)+"</b><br>"+"<b>"+name1Take(nameB,stB,wkB)+"</b>";
@@ -1257,8 +1274,8 @@ function renderWuxing(sA,sB,nameA,nameB){
   if(sA[wkB]>=2.0 && wkB!==stB) take+="<br>好消息是——"+nameB+"命裡最少的「"+wkB+"」，"+nameA+"剛好夠多，<b>正好補得上</b>，這就是「互補」。";
   else if(sB[wkA]>=2.0 && wkA!==stA) take+="<br>好消息是——"+nameA+"命裡最少的「"+wkA+"」，"+nameB+"剛好帶來，<b>正好補得上</b>，這就是「互補」。";
   else take+="<br>你們的五行各有強弱，沒有誰能完全補誰——靠的是日常的互相體諒，慢慢就會合拍。";
-  return "<div class='wx2-intro'>每個人命裡都有「木火土金水」五種能量，就像五種營養——<b>太多或太缺都會偏</b>。下面看你們各自哪種多、哪種少：</div>"
-    +block(sA,nameA)+block(sB,nameB)
+  return "<div class='wx2-intro'>每個人命裡都有「木火土金水」五種能量，就像五種營養——<b>太多或太缺都會偏</b>。下圖是你們各自的五行命盤，<b>哪個角伸得越長，那種能量就越強</b>（★＝最旺）：</div>"
+    +"<div class='wx2-grid'>"+block(sA,nameA,0)+block(sB,nameB,1)+"</div>"
     +"<div class='wx2-take'>"+take+"</div>";
 }
 function name1Take(name,st,wk){ return name+"：命裡最多的是「"+st+"」，最少的是「"+wk+"」。"; }
