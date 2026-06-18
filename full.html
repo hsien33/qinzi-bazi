@@ -195,10 +195,17 @@
   .scorecard .num{font-size:78px;font-weight:900;line-height:1;letter-spacing:1px;
     font-family:"Noto Serif TC",serif;font-variant-numeric:tabular-nums;text-shadow:0 3px 14px rgba(0,0,0,.18)}
   .scorecard .num small{font-size:22px;opacity:.8;font-weight:600}
-  .scorecard .ctype{display:inline-block;margin:12px auto 2px;padding:8px 20px;border-radius:999px;
-    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.32);
-    font-size:19px;font-weight:800;letter-spacing:1.5px;box-shadow:0 3px 10px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.3)}
+  .scorecard .ctype{display:inline-block;margin:14px auto 6px;padding:9px 22px;border-radius:999px;
+    background:linear-gradient(180deg,#fbeebf 0%,#e7c477 52%,#c79a45 100%);
+    color:#4a2d18;border:1px solid rgba(255,255,255,.55);font-family:"Noto Serif TC",serif;
+    font-size:21px;font-weight:800;letter-spacing:1.5px;
+    box-shadow:0 5px 16px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -2px 5px rgba(150,100,40,.28);
+    text-shadow:0 1px 0 rgba(255,255,255,.4)}
+  .scorecard .crare{font-size:12.5px;letter-spacing:1px;opacity:.95;margin:0 0 2px;font-weight:600}
+  .scorecard .crare .star{color:#ffe9a8}
   .scorecard .verdict{font-size:15px;font-weight:600;margin-top:9px;letter-spacing:2px;opacity:.92}
+  .scorecard .cwhy{font-size:12px;opacity:.78;margin-top:7px;letter-spacing:.5px;font-style:normal}
+  .scorecard .cwhy b{opacity:.95}
   .scorecard .oneline{font-size:14.5px;opacity:.95;margin-top:8px;line-height:1.8;max-width:26em;
     margin-left:auto;margin-right:auto;text-wrap:balance}
   .scorecard .meter{height:9px;border-radius:999px;background:rgba(255,255,255,.25);margin:16px auto 0;max-width:320px;overflow:hidden}
@@ -432,8 +439,10 @@
         <div class="tier" id="r_tier"></div>
         <div class="num" id="r_score">--<small>分</small></div>
         <div class="ctype" id="r_title"></div>
+        <div class="crare" id="r_rare"></div>
         <div class="verdict" id="r_verdict"></div>
         <div class="oneline" id="r_oneline"></div>
+        <div class="cwhy" id="r_why"></div>
         <div class="meter"><i id="r_meter"></i></div>
         <div class="scnote">分數採古法「上中下等婚」高分刻度（人人有面子）；你們是哪一「型」，才是這份緣分的特色</div>
       </div>
@@ -481,6 +490,7 @@
     <div class="card iggate" id="igGate" style="display:none">
       <div class="ig-emoji">🔒</div>
       <h3>完整解讀，私訊免費解鎖 💛</h3>
+      <p class="ig-line" id="igGateHook"></p>
       <ul class="ig-checks">
         <li>✓ <b>Jeff 白話完整解讀</b>：你們先天的底氣、緣分的甜與卡、調候與貴人</li>
         <li>✓ <b>給爸媽的三個相處提醒</b>：依你們八字客製，照做就有感</li>
@@ -489,13 +499,14 @@
       </ul>
       <p class="ig-line">到 IG 追蹤 <b id="igHandle">@jeff.walk2light</b>、私訊關鍵字「<span class="ig-key" id="igKey">八字</span>」，我把完整版送給你 💛</p>
       <a class="ig-btn" id="igBtn" href="https://www.instagram.com/jeff.walk2light/" target="_blank" rel="noopener">前往 IG ＠jeff.walk2light</a>
-      <div class="ig-sub">免費・30 秒・幫你更懂孩子，不推銷任何東西</div>
+      <div class="ig-sub">免費・30 秒・幫你更懂孩子，不推銷任何東西<br>生日資料只存在你手機（localStorage），不會上傳</div>
     </div>
 
     <h2 class="sec" id="adviceHead">④ 給爸媽的三個提醒 <small>看得懂、做得到</small></h2>
     <div class="card advice" id="advice"></div>
 
-    <h2 class="sec">⑤ 把這份緣分分享出去 <small>一鍵存成圖・PO 給家人朋友</small></h2>
+    <h2 class="sec">⑤ 把這份緣分分享出去 <small>標另一半，比比你們各是哪一型</small></h2>
+    <p class="sub">12 型親子緣分，你抽到哪一型？把圖卡 PO 出去，<b>tag 另一半或閨蜜一起測</b>，看誰跟孩子的緣分分數高、誰抽到的型更稀有 😏</p>
     <div class="card sharecard">
       <div class="sharefmt sans">
         <button class="fmtbtn active" data-fmt="post" type="button">🖼 貼文 4:5</button>
@@ -926,19 +937,25 @@ function compat(pA,pB){
 
 /* 親子「緣分類型」稱號——可截圖、可對話的身分標籤；差異化靠這個（不靠壓低分數）。
    依命局最突出的訊號給，全部正向框架（連沖剋都翻成正面）。 */
+const TITLE_FREQ={恩星守護型:31,並肩戰友型:13,互補神隊友型:17,冷暖相濟型:11,同款靈魂型:6,互為恩星型:4.5,細水長流型:4,默契神隊友型:3.5,越吵越親型:3.3,小棉襖型:2.8,活水源頭型:2.7,彼此貴人型:1.6};
+function titleRarity(name){
+  const p=TITLE_FREQ[name]||5, oneIn=Math.max(2,Math.round(100/p));
+  const tier=p<2?"極稀有":(p<5?"稀有":(p<12?"少見":"經典"));
+  return {p,oneIn,tier};
+}
 function coupleTitle(r){
-  if(r.yong && r.yong.AfavB && r.yong.BfavA) return {name:"互為恩星型",emo:"🌟",desc:"在命理喜用上彼此成全——難得的天作之合"};
-  if(r.yong && (r.yong.AfavB||r.yong.BfavA)) return {name:"恩星守護型",emo:"🛡️",desc:"一方正好補上另一方命裡最需要的那塊"};
-  if(r.liuhe) return {name:"默契神隊友型",emo:"💞",desc:"日支六合、天生對頻，一個眼神就懂"};
-  if(r.tiaohouHit) return {name:"冷暖相濟型",emo:"🔥",desc:"你剛好是他命裡需要的那份溫度"};
-  if(r.relA==="子剋父"||r.officerHeavy) return {name:"並肩戰友型",emo:"⚔️",desc:"棋逢對手、針鋒相對，卻最挺彼此"};
-  if(r.liuchong) return {name:"越吵越親型",emo:"🧲",desc:"像磁鐵般互彈，但和好後感情更深"};
-  if(r.complement) return {name:"互補神隊友型",emo:"🧩",desc:"你缺的他剛好有，天生互相補位"};
-  if(r.relA==="父生子") return {name:"活水源頭型",emo:"💧",desc:"你是他天生的養分，給得自然"};
-  if(r.relA==="子生父") return {name:"小棉襖型",emo:"🧸",desc:"這孩子是來疼你的，貼心又暖"};
-  if(r.relA==="同") return {name:"同款靈魂型",emo:"🪞",desc:"同一種材質，最懂彼此也最像"};
-  if(r.guiren) return {name:"彼此貴人型",emo:"🍀",desc:"命裡互帶貴氣，是彼此的福星"};
-  return {name:"細水長流型",emo:"🌱",desc:"不轟轟烈烈，靠日子慢慢養出來的緣"};
+  if(r.yong && r.yong.AfavB && r.yong.BfavA) return {name:"互為恩星型",emo:"🌟",desc:"在命理喜用上彼此成全——難得的天作之合",why:"你們的日主互為對方的喜用神"};
+  if(r.yong && (r.yong.AfavB||r.yong.BfavA)) return {name:"恩星守護型",emo:"🛡️",desc:"一方正好補上另一方命裡最需要的那塊",why:"一方的日主，正是對方命裡最需要的五行"};
+  if(r.liuhe) return {name:"默契神隊友型",emo:"💞",desc:"日支六合、天生對頻，一個眼神就懂",why:"你們日支六合（地支相吸）"};
+  if(r.tiaohouHit) return {name:"冷暖相濟型",emo:"🔥",desc:"你剛好是他命裡需要的那份溫度",why:"調候互補——一方補上對方命局的寒或暖"};
+  if(r.relA==="子剋父"||r.officerHeavy) return {name:"並肩戰友型",emo:"⚔️",desc:"棋逢對手、針鋒相對，卻最挺彼此",why:"十神成官殺基調，剛健相磨"};
+  if(r.liuchong) return {name:"越吵越親型",emo:"🧲",desc:"像磁鐵般互彈，但和好後感情更深",why:"你們日支相沖，動中藏情"};
+  if(r.complement) return {name:"互補神隊友型",emo:"🧩",desc:"你缺的他剛好有，天生互相補位",why:"五行強弱正好彼此補位"};
+  if(r.relA==="父生子") return {name:"活水源頭型",emo:"💧",desc:"你是他天生的養分，給得自然",why:"你的日主生孩子的日主（印生）"};
+  if(r.relA==="子生父") return {name:"小棉襖型",emo:"🧸",desc:"這孩子是來疼你的，貼心又暖",why:"孩子的日主回生你（食傷反哺）"};
+  if(r.relA==="同") return {name:"同款靈魂型",emo:"🪞",desc:"同一種材質，最懂彼此也最像",why:"你們日主同氣（同一種五行）"};
+  if(r.guiren) return {name:"彼此貴人型",emo:"🍀",desc:"命裡互帶貴氣，是彼此的福星",why:"日支互帶天乙貴人"};
+  return {name:"細水長流型",emo:"🌱",desc:"不轟轟烈烈，靠日子慢慢養出來的緣",why:"無特強合沖，靠日久生情慢慢養"};
 }
 
 /* ========== 評語區間 ========== */
@@ -1365,6 +1382,10 @@ function runCompat(){
   })(r.score);
   const ct=coupleTitle(r);
   $("r_title").textContent=ct.emo+" "+ct.name;
+  const rare=titleRarity(ct.name);
+  const star=rare.p<5?"<span class='star'>✦</span> ":"";
+  $("r_rare").innerHTML=star+"12 型中的「"+ct.name+"」・"+rare.tier+"（約每 "+rare.oneIn+" 個家庭 1 位）";
+  $("r_why").innerHTML="為什麼是這型：<b>"+ct.why+"</b>";
   $("r_verdict").textContent=t.tier;
   $("r_oneline").textContent=ct.desc;
   setTimeout(()=>{ $("r_meter").style.width=r.score+"%"; },120);
@@ -1386,6 +1407,9 @@ function runCompat(){
   } else {
     $("readHead").innerHTML="③ 先看一段・這段緣分怎麼看 <small>完整版私訊解鎖</small>";
     $("reading").innerHTML=pangu(buildReadingTeaser(r,nameA,nameB));
+    const gh=$("igGateHook");
+    if(gh){ const rare2=titleRarity(ct.name);
+      gh.innerHTML="你們是 <b>"+ct.emo+ct.name+"</b>（"+rare2.tier+"・約每 "+rare2.oneIn+" 個家庭 1 位）——這一型該<b>怎麼相處</b>、孩子的<b>讀書考運</b>，完整版一次說給你聽 💛"; }
     $("igGate").style.display="block";
     $("adviceHead").style.display="none"; $("advice").style.display="none";
   }
@@ -1477,10 +1501,11 @@ function shareHook(r){ const L=buildHooks(r); return L[(state.hookIdx||0)%L.leng
 function shareCaption(r,nameA,nameB){
   const t=tierOf(r.score);
   const url=(location.origin&&location.origin.indexOf("http")===0)?location.origin+location.pathname:"https://hsien33.github.io/qinzi-bazi/";
-  const ct=coupleTitle(r);
+  const ct=coupleTitle(r); const rare=titleRarity(ct.name);
   return pangu("我跟"+nameB+"的八字緣分是 "+r.score+" 分・"+ct.emo+ct.name+" ✨\n"
+    +(rare.p<5?"✦ ":"")+"12 型裡的「"+ct.name+"」，"+rare.tier+"——約每 "+rare.oneIn+" 個家庭才 1 位 😏\n"
     +ct.desc+"\n"+shareHook(r)+"\n\n命理關係【"+r.shishenAB+"】——"+(SHISHEN_PC[r.shishenAB]?SHISHEN_PC[r.shishenAB].one:"")+"。\n\n"
-    +"👇 標記另一半或閨蜜，比比看誰跟孩子的緣分分數高～\n"
+    +"👇 標記另一半或閨蜜，比比看你們各是哪一型、誰的分數高～\n"
     +"也測測你家的（免費・蠻療癒的）👉 "+url+"\n"
     +"完整解讀＋給爸媽的相處提醒：IG 追蹤 @jeff.walk2light 私訊「八字」\n"
     +"#八字合不合 #親子緣分 #親子教養 #療癒系 #媽媽日常 #財富煉金術");
@@ -1544,9 +1569,13 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   const ct=coupleTitle(r);
   ctx.fillStyle="#fff"; ctx.font='700 '+(big?60:50)+'px "Noto Serif TC",serif';
   ctx.fillText(ct.emo+" "+ct.name, cx, cy+R+(big?96:84));
+  const rare=titleRarity(ct.name);
+  const rtxt=(rare.p<5?"✦ ":"")+rare.tier+" ・ 約每 "+rare.oneIn+" 個家庭 1 位";
+  ctx.fillStyle="#f0d28a"; ctx.font='600 '+(big?34:29)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText(rtxt, cx, cy+R+(big?142:124));
   const badge="命理關係・"+r.shishenAB;
   ctx.font='700 '+(big?40:36)+'px "Noto Sans TC",sans-serif';
-  const bw=ctx.measureText(badge).width+80, by=cy+R+(big?132:116), bh=big?76:68;
+  const bw=ctx.measureText(badge).width+80, by=cy+R+(big?188:162), bh=big?76:68;
   roundRect(ctx, cx-bw/2, by, bw, bh, bh/2);
   ctx.fillStyle="rgba(231,196,119,.16)"; ctx.fill();
   ctx.strokeStyle="rgba(231,196,119,.6)"; ctx.lineWidth=2; ctx.stroke();
