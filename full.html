@@ -514,6 +514,12 @@
         <button class="fmtbtn" data-fmt="story" type="button">📱 限動 9:16</button>
         <button id="reHookBtn" class="fmtbtn hookbtn" type="button">🎲 換一句金句</button>
       </div>
+      <div class="sharephoto sans" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px">
+        <button id="photoBtn" class="fmtbtn" type="button">📷 放上你們的合照（選填）</button>
+        <button id="photoClr" class="fmtbtn" type="button" style="display:none">✕ 移除照片</button>
+        <input type="file" id="photoInput" accept="image/*" style="display:none">
+        <span style="font-size:12px;color:var(--faint)">照片只在你手機上合成，不會上傳</span>
+      </div>
       <div class="shareprev"><canvas id="shareCanvas" width="1080" height="1350"></canvas></div>
       <div class="sharebtns sans">
         <button id="shareImgBtn" class="sbtn primary big">📲 一鍵分享圖卡</button>
@@ -1511,8 +1517,85 @@ function shareCaption(r,nameA,nameB){
     +"完整解讀＋給爸媽的相處提醒：IG 追蹤 @jeff.walk2light 私訊「八字」\n"
     +"#八字合不合 #親子緣分 #親子教養 #療癒系 #媽媽日常 #財富煉金術");
 }
+/* 物件填滿裁切（cover）：把圖等比鋪滿目標框、置中裁掉溢出 */
+function drawCover(ctx,img,dx,dy,dw,dh){
+  const ir=img.width/img.height, dr=dw/dh; let sw,sh,sx,sy;
+  if(ir>dr){ sh=img.height; sw=sh*dr; sx=(img.width-sw)/2; sy=0; }
+  else { sw=img.width; sh=sw/dr; sx=0; sy=(img.height-sh)/2; }
+  ctx.drawImage(img,sx,sy,sw,sh,dx,dy,dw,dh);
+}
+/* 照片模式：使用者上傳合照，雜誌封面式壓字（質感優先） */
+function renderCardPhoto(ctx,W,H,big,r,nameA,nameB,A){
+  A=A||{}; const cx=W/2;
+  const prog=A.prog==null?1:A.prog, midA=A.midA==null?1:A.midA, quoteA=A.quoteA==null?1:A.quoteA, ctaA=A.ctaA==null?1:A.ctaA, shine=A.shine;
+  const ct=coupleTitle(r), rare=titleRarity(ct.name);
+  // 1. 照片滿版
+  ctx.fillStyle="#1a1414"; ctx.fillRect(0,0,W,H);
+  try{ drawCover(ctx,state.photo,0,0,W,H); }catch(e){}
+  // 2. 上下柔和暗角（讓字浮出、又不蓋掉臉）
+  let g=ctx.createLinearGradient(0,0,0,H*0.30); g.addColorStop(0,"rgba(18,12,14,.55)"); g.addColorStop(1,"rgba(18,12,14,0)");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H*0.30);
+  g=ctx.createLinearGradient(0,H*0.40,0,H); g.addColorStop(0,"rgba(14,9,11,0)"); g.addColorStop(.5,"rgba(14,9,11,.62)"); g.addColorStop(1,"rgba(10,7,9,.93)");
+  ctx.fillStyle=g; ctx.fillRect(0,H*0.40,W,H*0.60);
+  // 3. 細緻雙框（編輯感）
+  ctx.strokeStyle="rgba(255,255,255,.42)"; ctx.lineWidth=2; ctx.strokeRect(34,34,W-68,H-68);
+  ctx.strokeStyle="rgba(231,196,119,.55)"; ctx.lineWidth=1.4; ctx.strokeRect(47,47,W-94,H-94);
+  // 4. 品牌 kicker（左上）
+  ctx.textAlign="left"; ctx.textBaseline="alphabetic";
+  ctx.fillStyle="#f0d9a8"; ctx.font='700 '+(big?32:28)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("財富煉金術 ・ 親子緣分", big?86:66, big?128:104);
+  // 5. 分數金印（右上）
+  const sealR=big?122:102, sx=W-(big?168:140), sy=big?208:176;
+  ctx.save(); ctx.globalAlpha=midA;
+  ctx.beginPath(); ctx.arc(sx,sy,sealR,0,7); ctx.fillStyle="rgba(18,12,16,.40)"; ctx.fill();
+  ctx.lineWidth=3.5; ctx.strokeStyle="#e7c477"; ctx.stroke();
+  ctx.lineWidth=1.4; ctx.strokeStyle="rgba(231,196,119,.5)"; ctx.beginPath(); ctx.arc(sx,sy,sealR-10,0,7); ctx.stroke();
+  const shown=Math.round(r.score*prog), digits=String(r.score).length;
+  const numF=Math.round((big?116:96)*(digits>=3?0.74:1));
+  ctx.textAlign="center"; ctx.fillStyle="#fff"; ctx.textBaseline="middle"; ctx.font='900 '+numF+'px "Noto Serif TC",serif';
+  ctx.fillText(shown, sx, sy-(big?10:8));
+  ctx.textBaseline="alphabetic"; ctx.fillStyle="#f0d9a8"; ctx.font='600 '+(big?24:21)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("分 ／ 100", sx, sy+(big?52:44));
+  ctx.restore();
+  // 6. 左下編輯式文字塊（由底往上堆）
+  const lx=big?92:68;
+  ctx.textAlign="left";
+  const igY=H-(big?96:70);
+  ctx.save(); ctx.globalAlpha=ctaA;
+  ctx.fillStyle="#f0d9a8"; ctx.font='700 '+(big?28:25)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("IG @jeff.walk2light ・ 私訊「八字」解鎖完整版", lx, igY);
+  ctx.restore();
+  // 金句（白襯線，1–2 行）
+  ctx.save(); ctx.globalAlpha=quoteA;
+  const quoteF=big?46:40, lh=big?68:58;
+  ctx.font='500 '+quoteF+'px "Noto Serif TC",serif';
+  const qlines=wrapSmart(ctx, shareHook(r), W-lx*2, 2);
+  let qy=igY-(big?64:50)-(qlines.length-1)*lh;
+  ctx.fillStyle="rgba(255,255,255,.95)";
+  qlines.forEach((ln,i)=>ctx.fillText(ln, lx, qy+i*lh));
+  ctx.restore();
+  // 稱號大標＋稀有度
+  ctx.save(); ctx.globalAlpha=midA;
+  const rareY=qy-(big?58:48);
+  ctx.fillStyle="#f0d28a"; ctx.font='600 '+(big?29:26)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText((rare.p<5?"✦ ":"")+rare.tier+" ・ 約每 "+rare.oneIn+" 個家庭 1 位", lx, rareY);
+  const titleY=rareY-(big?44:36);
+  ctx.fillStyle="#fff"; ctx.font='700 '+(big?96:80)+'px "Noto Serif TC",serif';
+  ctx.textBaseline="alphabetic"; ctx.fillText(ct.emo+" "+ct.name, lx, titleY);
+  // names kicker 在稱號上方
+  ctx.fillStyle="rgba(246,236,216,.85)"; ctx.font='600 '+(big?30:26)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText(clip(nameA,6)+"　✕　"+clip(nameB,6), lx, titleY-(big?112:92));
+  ctx.restore();
+  // 掃光
+  if(shine!=null){ ctx.save(); ctx.globalCompositeOperation="overlay";
+    const ssx=-W+shine*(2*W), sg=ctx.createLinearGradient(ssx,0,ssx+W*0.5,H);
+    sg.addColorStop(0,"rgba(255,240,200,0)"); sg.addColorStop(.5,"rgba(255,240,200,.2)"); sg.addColorStop(1,"rgba(255,240,200,0)");
+    ctx.fillStyle=sg; ctx.fillRect(0,0,W,H); ctx.restore(); }
+  ctx.textAlign="center";
+}
 /* 繪製一幀（A=動畫狀態，省略則為靜態完成圖） */
 function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
+  if(state.photo && state.photo.complete && state.photo.naturalWidth){ return renderCardPhoto(ctx,W,H,big,r,nameA,nameB,A); }
   A=A||{}; const cx=W/2;
   const prog=A.prog==null?1:A.prog, midA=A.midA==null?1:A.midA, quoteA=A.quoteA==null?1:A.quoteA, ctaA=A.ctaA==null?1:A.ctaA, shine=A.shine;
   ctx.textAlign="center"; ctx.textBaseline="alphabetic";
@@ -1751,6 +1834,21 @@ $("videoBtn").addEventListener("click",()=>{ exportShareVideo().catch(()=>{ $("v
 $("reHookBtn").addEventListener("click",()=>{
   state.hookIdx=(state.hookIdx||0)+1; redrawShare();
   $("shareHint").textContent="換了一句～喜歡就存圖分享，或再按一次換一句 🎲";
+});
+// 上傳合照（只在本機合成、不上傳）
+$("photoBtn").addEventListener("click",()=>$("photoInput").click());
+$("photoInput").addEventListener("change",function(e){
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  if(!/^image\//.test(f.type)){ $("shareHint").textContent="請選一張圖片檔喔。"; return; }
+  const rd=new FileReader();
+  rd.onload=ev=>{ const img=new Image(); img.onload=()=>{ state.photo=img; $("photoClr").style.display=""; $("photoBtn").textContent="📷 換一張合照";
+      redrawShare(); $("shareHint").textContent="照片放上去囉～分數做成右上金印、稱號壓在左下，整張就是雜誌封面感 ✨（照片只在你手機合成，不會上傳）"; };
+    img.onerror=()=>{ $("shareHint").textContent="這張圖讀不了，換一張試試。"; }; img.src=ev.target.result; };
+  rd.readAsDataURL(f); e.target.value="";
+});
+$("photoClr").addEventListener("click",()=>{
+  state.photo=null; $("photoClr").style.display="none"; $("photoBtn").textContent="📷 放上你們的合照（選填）";
+  redrawShare(); $("shareHint").textContent="已移除照片，回到米色雜誌風圖卡。";
 });
 </script>
 </body>
