@@ -1533,7 +1533,7 @@ function shareCaption(r,nameA,nameB){
     +ct.desc+"\n"+shareHook(r)+"\n\n命理關係【"+r.shishenAB+"】——"+(SHISHEN_PC[r.shishenAB]?SHISHEN_PC[r.shishenAB].one:"")+"。\n\n"
     +"👇 標記另一半或閨蜜，比比看你們各是哪一型、誰的分數高～\n"
     +"也測測你家的（免費・蠻療癒的）👉 "+url+"\n"
-    +"完整解讀＋給爸媽的相處提醒：IG 追蹤 @jeff.walk2light 私訊「八字」\n"
+    +"by IG @jeff.walk2light\n"
     +"#八字合不合 #親子緣分 #親子教養 #療癒系 #媽媽日常 #財富煉金術");
 }
 /* 物件填滿裁切（cover）：把圖等比鋪滿目標框、置中裁掉溢出 */
@@ -1562,7 +1562,7 @@ function renderCardPhoto(ctx,W,H,big,r,nameA,nameB,A){
   // 4. 品牌 kicker（左上）
   ctx.textAlign="left"; ctx.textBaseline="alphabetic";
   ctx.fillStyle="#f0d9a8"; ctx.font='700 '+(big?32:28)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("財富煉金術 ・ 親子緣分", big?86:66, big?128:104);
+  ctx.fillText("親子緣份 ・ 八字合不合", big?86:66, big?128:104);
   // 5. 分數金印（右上）
   const sealR=big?122:102, sx=W-(big?168:140), sy=big?208:176;
   ctx.save(); ctx.globalAlpha=midA;
@@ -1582,7 +1582,7 @@ function renderCardPhoto(ctx,W,H,big,r,nameA,nameB,A){
   const igY=H-(big?96:70);
   ctx.save(); ctx.globalAlpha=ctaA;
   ctx.fillStyle="#f0d9a8"; ctx.font='700 '+(big?28:25)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("IG @jeff.walk2light ・ 私訊「八字」解鎖完整版", lx, igY);
+  ctx.fillText("IG @jeff.walk2light", lx, igY);
   ctx.restore();
   // 金句（白襯線，1–2 行）
   ctx.save(); ctx.globalAlpha=quoteA;
@@ -1619,53 +1619,39 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   const prog=A.prog==null?1:A.prog, midA=A.midA==null?1:A.midA, quoteA=A.quoteA==null?1:A.quoteA, ctaA=A.ctaA==null?1:A.ctaA, shine=A.shine;
   ctx.textAlign="center"; ctx.textBaseline="alphabetic";
   const ct=coupleTitle(r), rare=titleRarity(ct.name);
-  // 依分數取主色（立體大色圈：高光/亮/基/暗 四階）
-  const ACC=[
-    {h:"#f3a98f",l:"#e07a5f",b:"#c8452f",d:"#9c3320"},
-    {h:"#f5d79a",l:"#edb24c",b:"#d8922a",d:"#a96b16"},
-    {h:"#a9cbe6",l:"#6fa0c6",b:"#3f76a3",d:"#2c5a82"},
-    {h:"#cdb9e0",l:"#a98cc0",b:"#8a6aa0",d:"#654a7d"}
-  ][ r.score>=93?0:(r.score>=86?1:(r.score>=81?2:3)) ];
-  const acc=ACC.b, ink="#3a3128", soft="#a99c84";
+  // 依分數取主色（飽和平塗圓盤；立體感來自背景柔影＋色彩深淺，非玻璃球）
+  const acc=["#d2452c","#df982b","#3f76a3","#896aa3"][ r.score>=93?0:(r.score>=86?1:(r.score>=81?2:3)) ];
+  const ink="#3a3128", soft="#a99c84";
   // 米色底
   const bg=ctx.createLinearGradient(0,0,0,H);
   bg.addColorStop(0,"#f7f1e4"); bg.addColorStop(1,"#ece1cf");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
   // 幾何點綴（極淡）
   ctx.save();
-  ctx.strokeStyle="rgba(58,49,40,.055)"; ctx.lineWidth=2;
+  ctx.strokeStyle="rgba(58,49,40,.05)"; ctx.lineWidth=2;
   [[W-30,30,205],[W+50,90,330],[70,H-30,180],[-10,H+10,310]].forEach(a=>{ ctx.beginPath(); ctx.arc(a[0],a[1],a[2],0,7); ctx.stroke(); });
-  ctx.fillStyle=acc; ctx.globalAlpha=.10;
-  ctx.beginPath(); ctx.arc(W-118,H*0.16,28,0,7); ctx.fill();
-  ctx.beginPath(); ctx.arc(104,H*0.46,16,0,7); ctx.fill();
-  ctx.globalAlpha=.06;
+  ctx.fillStyle=acc; ctx.globalAlpha=.09;
+  ctx.beginPath(); ctx.arc(W-118,H*0.16,26,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc(104,H*0.46,15,0,7); ctx.fill();
+  ctx.globalAlpha=.05;
   for(let i=0;i<5;i++)for(let j=0;j<=i;j++){ ctx.beginPath(); ctx.arc(W-176+j*26-i*13, H*0.82+i*25, 4,0,7); ctx.fill(); }
   ctx.restore();
 
-  // 品牌一句（不堆 logo）
-  ctx.fillStyle="#b5873a"; ctx.font='700 '+(big?32:28)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("財富煉金術 ・ 親子緣分", cx, big?140:118);
+  // 頂部標題一句
+  ctx.fillStyle="#9c7a3a"; ctx.font='700 '+(big?30:26)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("親子緣份 ・ 八字合不合", cx, big?138:118);
 
-  // HERO 立體大色圈（分數）
-  const cyc=big?580:430, R=big?270:216;
-  ctx.save(); ctx.fillStyle="rgba(120,86,40,.16)";
-  ctx.beginPath(); ctx.ellipse(cx,cyc+R*0.95,R*0.78,R*0.16,0,0,7); ctx.fill(); ctx.restore();
-  const cg=ctx.createRadialGradient(cx-R*0.40,cyc-R*0.44,R*0.08, cx,cyc,R*1.08);
-  cg.addColorStop(0,ACC.h); cg.addColorStop(0.46,ACC.l); cg.addColorStop(1,ACC.d);
-  ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cyc,R,0,7); ctx.fill();
-  ctx.save(); ctx.beginPath(); ctx.arc(cx,cyc,R,0,7); ctx.clip();
-  const rim=ctx.createRadialGradient(cx,cyc-R*0.15,R*0.55,cx,cyc+R*0.10,R*1.05);
-  rim.addColorStop(0,"rgba(0,0,0,0)"); rim.addColorStop(1,"rgba(0,0,0,.30)");
-  ctx.fillStyle=rim; ctx.fillRect(cx-R,cyc-R,R*2,R*2);
-  const hl=ctx.createRadialGradient(cx-R*0.40,cyc-R*0.46,2,cx-R*0.40,cyc-R*0.46,R*0.80);
-  hl.addColorStop(0,"rgba(255,255,255,.55)"); hl.addColorStop(1,"rgba(255,255,255,0)");
-  ctx.fillStyle=hl; ctx.fillRect(cx-R,cyc-R,R*2,R*2); ctx.restore();
-  ctx.lineWidth=2.5; ctx.strokeStyle="rgba(255,255,255,.38)"; ctx.beginPath(); ctx.arc(cx,cyc,R-1,0,7); ctx.stroke();
+  // HERO 飽和平塗圓盤 + 背景柔影（漂浮圓盤，非玻璃球）
+  const cyc=big?600:455, R=big?262:208;
+  ctx.save();
+  ctx.shadowColor="rgba(70,48,32,.32)"; ctx.shadowBlur=big?82:62; ctx.shadowOffsetY=big?30:22;
+  ctx.fillStyle=acc; ctx.beginPath(); ctx.arc(cx,cyc,R,0,7); ctx.fill();
+  ctx.restore();
+  // 分數
   const shown=Math.round(r.score*prog), digits=String(r.score).length;
   const numF=Math.round((big?264:212)*(digits>=3?0.6:(digits>=2?0.9:1)));
-  ctx.save(); ctx.shadowColor="rgba(0,0,0,.18)"; ctx.shadowBlur=big?18:14; ctx.shadowOffsetY=4;
   ctx.fillStyle="#fff"; ctx.textBaseline="middle"; ctx.font='900 '+numF+'px "Noto Serif TC",serif';
-  ctx.fillText(shown, cx, cyc-(big?18:14)); ctx.restore();
+  ctx.fillText(shown, cx, cyc-(big?18:14));
   ctx.textBaseline="alphabetic";
   ctx.fillStyle="rgba(255,255,255,.9)"; ctx.font='600 '+(big?36:31)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("分 ╱ 100", cx, cyc+(big?136:108));
@@ -1699,15 +1685,13 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   ctx.fillStyle=ink; lines.forEach((ln,i)=>ctx.fillText(ln, cx, qTop+i*lh));
   ctx.restore();
 
-  // 底部 CTA + 回流入口
+  // 底部：作者署名（極簡）
   ctx.save(); ctx.globalAlpha=ctaA;
-  const discY=H-(big?92:66), igY=discY-(big?60:50), ctaY=igY-(big?58:48);
+  const discY=H-(big?58:42), igY=discY-(big?54:44);
   ctx.strokeStyle="#dcd2bf"; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(cx-(big?270:215),ctaY-(big?56:48)); ctx.lineTo(cx+(big?270:215),ctaY-(big?56:48)); ctx.stroke();
-  ctx.fillStyle=soft; ctx.font='500 '+(big?29:26)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("標另一半一起測・看你們各是哪一型", cx, ctaY);
-  ctx.fillStyle=acc; ctx.font='700 '+(big?31:27)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("IG @jeff.walk2light ・ 私訊「八字」解鎖完整版", cx, igY);
+  ctx.beginPath(); ctx.moveTo(cx-(big?52:44),igY-(big?44:36)); ctx.lineTo(cx+(big?52:44),igY-(big?44:36)); ctx.stroke();
+  ctx.fillStyle=acc; ctx.font='700 '+(big?30:26)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("IG @jeff.walk2light", cx, igY);
   ctx.fillStyle="#bdb3a0"; ctx.font='400 '+(big?22:20)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("八字屬傳統文化・參考娛樂", cx, discY);
   ctx.restore();
