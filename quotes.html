@@ -1,130 +1,112 @@
 <!doctype html>
-<html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<!-- 財富煉金術品牌 favicon -->
+<html lang="zh-Hant"><head><meta charset="utf-8">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><circle cx='64' cy='64' r='63' fill='%230f172a'/><polygon points='64,20 96,68 79,68 79,106 49,106 49,68 32,68' fill='%23F4C430'/></svg>">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>金句對照表・父母子女八字工具</title>
+<title>金句・稱號 全組合對照表（40 型）</title>
 <style>
-  :root{ --ink:#3a3128; --soft:#8c7f6a; --gold:#b5873a; --line:#e3d8c4; --cream:#f7f1e4; }
-  *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(180deg,#faf5ea,#efe6d4);color:var(--ink);
-    font-family:"Noto Sans TC","PingFang TC",sans-serif;line-height:1.7;padding:28px 16px 60px}
-  .wrap{max-width:1080px;margin:0 auto}
-  h1{font-family:"Noto Serif TC",serif;font-size:27px;margin:0 0 4px;letter-spacing:1px}
-  .sub{color:var(--soft);font-size:14px;margin:0 0 22px}
-  .legend{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:22px;font-size:13.5px}
-  .legend b{color:var(--gold)}
-  .legend .row{margin:5px 0}
-  .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;margin-right:4px}
-  .stat{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0}
-  .stat .b{background:#f3ead6;border-radius:10px;padding:8px 14px;font-size:13px}
-  .stat .b b{font-size:18px;color:var(--gold);font-family:"Noto Serif TC",serif}
-  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px;
-    box-shadow:0 4px 14px rgba(120,90,50,.06)}
-  .head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .emo{font-size:30px;line-height:1}
-  .name{font-family:"Noto Serif TC",serif;font-size:22px;font-weight:700}
-  .rare{font-size:12.5px;font-weight:700;padding:3px 11px;border-radius:999px;background:#f3ead6;color:#8a6a16}
-  .rare.r0{background:#f6e3df;color:#b03a28} .rare.r1{background:#efe1f0;color:#7a4f8a}
-  .why{font-size:13px;color:var(--soft);margin:7px 0 2px}
-  .why b{color:var(--ink)}
-  .desc{font-size:13.5px;color:#6a5c46;margin:0 0 12px;font-style:italic}
-  .quotes{list-style:none;margin:0;padding:0;counter-reset:q}
-  .quotes li{counter-increment:q;font-family:"Noto Serif TC",serif;font-size:16px;padding:9px 12px 9px 44px;position:relative;
-    border-top:1px dashed var(--line)}
-  .quotes li:first-child{font-weight:700}
-  .quotes li::before{content:counter(q);position:absolute;left:12px;top:9px;width:24px;height:24px;border-radius:50%;
-    background:#efe6d4;color:var(--gold);font-family:sans-serif;font-size:12px;font-weight:700;text-align:center;line-height:24px}
-  .quotes li:first-child::after{content:"預設・最有感";position:absolute;right:12px;top:11px;font-family:sans-serif;
-    font-size:11px;color:#fff;background:var(--gold);padding:2px 9px;border-radius:999px}
-  .sctalk{margin-top:30px;border-top:2px solid var(--line);padding-top:18px}
-  .scbar{display:flex;border-radius:12px;overflow:hidden;margin:10px 0;font-size:13px;font-weight:700;color:#fff;text-align:center}
-  .scbar div{padding:10px 6px}
-  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
-  td,th{border:1px solid var(--line);padding:7px 10px;text-align:left}
-  th{background:#f3ead6}
-  .foot{color:var(--soft);font-size:12px;margin-top:26px;text-align:center}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <h1>金句・稱號・稀有度 全組合對照表</h1>
-  <p class="sub">父母子女・八字合不合工具 ｜ 內部審稿用 ｜ 金句皆策展、非隨機</p>
-
-  <div class="legend">
-    <div class="row">🧭 <b>金句怎麼來</b>：依兩人八字算出的「<b>稱號</b>」決定——稱號鎖定你們命裡最核心的緣分訊號（六合／調候／用神互補／官殺／相沖／生剋…），每型 3 句都切題，<b>第一句＝最有感（預設顯示）</b>，按「換一句」在同型 3 句間輪播。</div>
-    <div class="row">🏷️ <b>稱號怎麼定</b>：依命理優先序由上往下判，命中哪條就是哪型（下表即判定順序）。</div>
-    <div class="row">🔢 <b>分數是另一條刻度</b>：與金句獨立。色圈顏色：<span class="chip" style="background:#c8452f">≥93 朱紅</span><span class="chip" style="background:#d8922a">≥86 琥珀</span><span class="chip" style="background:#3f76a3">≥81 黛藍</span><span class="chip" style="background:#8a6aa0">&lt;81 紫藤</span></div>
-    <div class="stat" id="stat"></div>
-  </div>
-
-  <div id="cards"></div>
-
-  <div class="sctalk">
-    <h1 style="font-size:20px">補充：分數刻度與色圈</h1>
-    <p class="sub">分數採古法「上中下等婚」高分刻度（地板 78、中位數 85），讓人人有面子；差異化交給稱號。</p>
-    <div class="scbar">
-      <div style="background:#8a6aa0;flex:3">78–80 紫藤・溫潤</div>
-      <div style="background:#3f76a3;flex:5">81–85 黛藍・順暢</div>
-      <div style="background:#d8922a;flex:7">86–92 琥珀・很好</div>
-      <div style="background:#c8452f;flex:8">93–100 朱紅・極佳</div>
-    </div>
-    <p class="sub">分享圖卡的大色圈會依分數落點換色，金句則依稱號——兩者組合出每張卡的獨特感。</p>
-  </div>
-
-  <p class="foot">財富煉金術 ・ 向光而行 ｜ 金句總數 = 12 型 × 3 句 = 36 句</p>
+ :root{--ink:#3a3128;--soft:#8c7f6a;--gold:#b5873a;--line:#e3d8c4;}
+ *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#faf5ea,#efe6d4);color:var(--ink);font-family:"Noto Sans TC","PingFang TC",sans-serif;line-height:1.7;padding:26px 16px 60px}
+ .wrap{max-width:1080px;margin:0 auto}
+ h1{font-family:"Noto Serif TC",serif;font-size:26px;margin:0 0 4px}
+ .sub{color:var(--soft);font-size:14px;margin:0 0 20px}
+ .legend{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:18px;font-size:13.5px}
+ .legend b{color:var(--gold)}
+ .axes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+ @media(max-width:640px){.axes{grid-template-columns:1fr}}
+ .axes .box{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+ .axes h3{margin:0 0 8px;font-size:15px}
+ table{width:100%;border-collapse:collapse;font-size:12.5px} td,th{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top} th{background:#f3ead6}
+ .stat{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px} .stat .b{background:#f3ead6;border-radius:10px;padding:7px 13px;font-size:13px} .stat .b b{font-size:18px;color:var(--gold);font-family:"Noto Serif TC",serif}
+ .group{margin:22px 0 6px} .group h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0;border-left:4px solid var(--gold);padding-left:10px}
+ .group .gm{color:var(--soft);font-size:12.5px;margin:3px 0 0 14px}
+ .card{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin:10px 0;box-shadow:0 4px 12px rgba(120,90,50,.05)}
+ .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+ .emo{font-size:24px} .name{font-family:"Noto Serif TC",serif;font-size:19px;font-weight:700}
+ .dz{font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:#ede3cf;color:#7a5e1a}
+ .dz.h{background:#e7f0e6;color:#3f7a4a} .dz.c{background:#f6e0dc;color:#b04a32} .dz.m{background:#efe7d0;color:#9a7b22} .dz.p{background:#e6ecf1;color:#4a6b86}
+ .rare{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:#f3ead6;color:#8a6a16}
+ .why{font-size:12.5px;color:var(--soft);margin:7px 0 1px} .why b{color:var(--ink)}
+ .desc{font-size:13px;color:#6a5c46;margin:0 0 9px;font-style:italic}
+ .quotes{list-style:none;margin:0;padding:0;counter-reset:q}
+ .quotes li{counter-increment:q;font-family:"Noto Serif TC",serif;font-size:15px;padding:8px 10px 8px 40px;position:relative;border-top:1px dashed var(--line)}
+ .quotes li:first-child{font-weight:700}
+ .quotes li::before{content:counter(q);position:absolute;left:10px;top:8px;width:22px;height:22px;border-radius:50%;background:#efe6d4;color:var(--gold);font-family:sans-serif;font-size:11px;font-weight:700;text-align:center;line-height:22px}
+ .quotes li:first-child::after{content:"預設";position:absolute;right:10px;top:10px;font-family:sans-serif;font-size:10.5px;color:#fff;background:var(--gold);padding:1px 8px;border-radius:999px}
+ .foot{color:var(--soft);font-size:12px;margin-top:26px;text-align:center}
+</style></head><body><div class="wrap">
+<h1>金句・稱號 全組合對照表</h1>
+<p class="sub">父母子女・八字合不合工具 ｜ 內部審稿 ｜ 依正統子平：<b>十神 × 日支態</b></p>
+<div class="legend">
+ <div>🧭 <b>稱號＝大人日主對孩子的「十神」(10) × 兩人「日支態」(合/沖/磨/平,4) ＝ 40 型</b>。每型 3 句金句皆扣命理意涵；第一句＝預設。「換一句」在同型 3 句輪播。</div>
+ <div style="margin-top:6px">🔢 稀有度依日支態實測頻率：平≈每 20 家庭、合≈每 45、磨≈每 49、<b>沖≈每 119（最稀有）</b>。</div>
+ <div class="stat"><div class="b"><b>40</b> 型</div><div class="b"><b>120</b> 句金句</div><div class="b">十神 × 日支態</div><div class="b">經命理大師＋于美人撰寫・校稿</div></div>
 </div>
-
+<div class="axes">
+ <div class="box"><h3>十神（大人日主 → 孩子）</h3><table><tr><th>十神</th><th>生剋／陰陽</th><th>親子白話</th></tr><tr><td><b>比肩</b></td><td>同五行・同陰陽</td><td>像手足、平等好勝；最懂也最會爭</td></tr><tr><td><b>劫財</b></td><td>同五行・異陰陽</td><td>義氣戰友、直接衝動</td></tr><tr><td><b>食神</b></td><td>我生孩子・同陰陽</td><td>我滋養他、才華溫和、相處順</td></tr><tr><td><b>傷官</b></td><td>我生孩子・異陰陽</td><td>聰明外露、反骨、要舞台</td></tr><tr><td><b>正財</b></td><td>我剋孩子・異陰陽</td><td>我捨得經營、踏實守護</td></tr><tr><td><b>偏財</b></td><td>我剋孩子・同陰陽</td><td>剋中帶黏、機靈、相處開心</td></tr><tr><td><b>正官</b></td><td>孩子剋我・異陰陽</td><td>他端正我、守分寸</td></tr><tr><td><b>七殺</b></td><td>孩子剋我・同陰陽</td><td>他磨我、棋逢對手</td></tr><tr><td><b>正印</b></td><td>孩子生我・異陰陽</td><td>他來蔭我、貼心依靠</td></tr><tr><td><b>偏印</b></td><td>孩子生我・同陰陽</td><td>偏靜庇蔭、外冷內熱</td></tr></table></div>
+ <div class="box"><h3>日支態（兩人日支關係）</h3><table><tr><th>態</th><th>命理</th><th>緣分感</th></tr><tr><td><b>合</b></td><td>六合／三合半合</td><td>相吸相黏、天生對頻</td></tr><tr><td><b>沖</b></td><td>六沖</td><td>能量相激盪、撞完更親</td></tr><tr><td><b>磨</b></td><td>相刑／相害／相破</td><td>暗摩擦、需對齊步調</td></tr><tr><td><b>平</b></td><td>無合沖刑害</td><td>平實，靠日子慢慢養</td></tr></table></div>
+</div>
+<div id="cards"></div>
+<p class="foot">財富煉金術 ・ 向光而行 ｜ 40 型 × 3 句 = 120 句，全部標明命理依據</p>
+</div>
 <script>
-const TITLE_FREQ={恩星守護型:31,並肩戰友型:13,互補神隊友型:17,冷暖相濟型:11,同款靈魂型:6,互為恩星型:4.5,細水長流型:4,默契神隊友型:3.5,越吵越親型:3.3,小棉襖型:2.8,活水源頭型:2.7,彼此貴人型:1.6};
-// 判定優先序（同 coupleTitle 由上往下）
-const TYPES=[
-  {emo:"🌟",name:"互為恩星型",why:"雙方日主<b>互為對方的喜用神</b>（命理最高等的互旺）",desc:"在命理喜用上彼此成全——難得的天作之合"},
-  {emo:"🛡️",name:"恩星守護型",why:"一方的日主，<b>正是對方命裡最需要的五行</b>",desc:"一方正好補上另一方命裡最需要的那塊"},
-  {emo:"💞",name:"默契神隊友型",why:"兩人<b>日支六合</b>（地支相吸）",desc:"日支六合、天生對頻，一個眼神就懂"},
-  {emo:"🔥",name:"冷暖相濟型",why:"<b>調候互補</b>——一方補上對方命局的寒或暖",desc:"你剛好是他命裡需要的那份溫度"},
-  {emo:"⚔️",name:"並肩戰友型",why:"十神成<b>官殺基調</b>／子剋父（剛健相磨）",desc:"棋逢對手、針鋒相對，卻最挺彼此"},
-  {emo:"🧲",name:"越吵越親型",why:"兩人<b>日支相沖</b>（動中藏情）",desc:"像磁鐵般互彈，但和好後感情更深"},
-  {emo:"🧩",name:"互補神隊友型",why:"<b>五行強弱正好彼此補位</b>",desc:"你缺的他剛好有，天生互相補位"},
-  {emo:"💧",name:"活水源頭型",why:"你的<b>日主生孩子的日主</b>（印生）",desc:"你是他天生的養分，給得自然"},
-  {emo:"🧸",name:"小棉襖型",why:"孩子的<b>日主回生你</b>（食傷反哺）",desc:"這孩子是來疼你的，貼心又暖"},
-  {emo:"🪞",name:"同款靈魂型",why:"兩人<b>日主同氣</b>（同一種五行）",desc:"同一種材質，最懂彼此也最像"},
-  {emo:"🍀",name:"彼此貴人型",why:"<b>日支互帶天乙貴人</b>",desc:"命裡互帶貴氣，是彼此的福星"},
-  {emo:"🌱",name:"細水長流型",why:"無特強合沖（<b>靠日久生情</b>）",desc:"不轟轟烈烈，靠日子慢慢養出來的緣"}
-];
-const TITLE_QUOTE={
-  互為恩星型:["命理說，我們是彼此命裡那塊缺角 🧩 剛好補上對方","八字認證的天作之合 🌟 我們是來成全彼此的","他旺我、我也旺他——這種緣，一輩子難得 ✨"],
-  恩星守護型:["命理說我剛好是孩子命裡最需要的那塊 🛡️","八字蓋章：我是來守護他的那個人 💛","他命裡缺的，剛好我有——這就是緣分 🍀"],
-  默契神隊友型:["八字說我們日支六合 💞 一個眼神就懂","天生對頻的我們 🎯 不用多說也默契","命理認證的神隊友 🤝 我們是同一國的"],
-  冷暖相濟型:["命理說我剛好是孩子命裡需要的溫度 🔥 暖哭","他命裡偏冷，我正好帶來暖——天生互暖 ☀️","八字說我們冷暖剛好相濟 🍵 在一起最舒服"],
-  並肩戰友型:["我們像兩個將軍 ⚔️ 會對撞、卻最挺彼此","越頂嘴越像我——他不是叛逆，是想被當大人 😮‍💨","命理說我們是並肩的戰友 🛡️ 吵歸吵，背靠背"],
-  越吵越親型:["我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深","八字說我們越吵越親 ❤️‍🔥 吵完又超黏","命裡天生對沖——但和好那一刻，最暖 🤍"],
-  互補神隊友型:["我們五行剛好互補 🧩 我缺的他剛好有","八字說我們是互補的一對 ⚖️ 湊在一起才完整","他補我、我補他——天生的好搭檔 🤝"],
-  活水源頭型:["八字說我是孩子的活水源頭 💧 給得自然又心甘","我對他幾乎有求必應 😅 學放手是我的功課","命理說我是來滋養他的——當後盾最甘願 🌱"],
-  小棉襖型:["八字說這孩子是來疼我的小棉襖 🧸 戀家又貼心","命理認證：他是來暖我的 🥹 一個眼神就心軟","這孩子天生黏我、暖我——上輩子的情人吧 💛"],
-  同款靈魂型:["八字說我跟孩子是同款靈魂 🪞 最懂也最像","同一種硬脾氣 😆 最懂彼此、也最會吵","命理認證的同款人——他就是另一個我 ✨"],
-  彼此貴人型:["天啊我們命裡互為貴人 ✨ 這輩子真的賺到","八字說我們是彼此的福星 🍀 互相旺一輩子","命理認證：遇到彼此，就是來旺對方的 🫶"],
-  細水長流型:["我們的緣分，是日子慢慢養出來的 🌱","不轟轟烈烈，但越往後越懂、越久越深 🍵","八字說我們細水長流——平淡，卻最扎實 🤍"]
+const SS_EMO={比肩:"🤝",劫財:"⚔️",食神:"🍼",傷官:"🎤",正財:"💎",偏財:"🍀",正官:"📏",七殺:"🗡️",正印:"🫶",偏印:"🌙"};
+const DZ_FREQ={合:22.4,沖:8.4,磨:20.4,平:48.9};
+const PC_CELL={
+比肩合:{n:"同心戰友型",d:"像並肩的隊友，天生對頻",b:"孩子與我同五行、同陰陽為比肩；日支六合或三合，同頻相吸",q:["我跟孩子同五行又同陰陽，八字看起來就是一對好戰友——一個眼神就懂彼此 😊","日支相合，我們這組緣分黏得自然，他跟我像朋友多過上下，講話不用繞圈。","命理說比肩是同氣的隊友——他懂我也挺我；日支又合，我學著把『指揮』收起來，跟他並肩扛，而不是站他上頭。"]},
+比肩沖:{n:"針鋒知己型",d:"會頂嘴互槓，吵完更靠近",b:"孩子與我比肩同氣（同陰陽），日支六沖，能量相激、好勝對撞",q:["比肩本就好強，再加日支相沖，我們倆一言不合就互槓——但八字看起來，吵完反而更貼心 🔥","他跟我像兩塊一樣硬的石頭，撞得火花四射；我提醒自己，他不是不愛我，是太像我。","命理說沖了會激盪，我們這組緣分是『不打不相識』；和好那一刻，話比平常都深。"]},
+比肩磨:{n:"較勁磨合型",d:"小事愛比較，步調要對齊",b:"孩子與我比肩同氣，日支相刑/害/破，暗處易摩擦較勁",q:["我們同是比肩，誰也不服誰，日支又帶刑害——常為一點小事暗暗較勁 😅","八字看起來我們容易在生活節奏上卡卡的，他想自己來、我又忍不住插手，得慢慢對齊步調。","命理說這組要磨，但磨的是默契不是感情；少比較、多輪流讓步，我們會愈處愈順。"]},
+比肩平:{n:"並肩同行型",d:"像平輩夥伴，日子慢慢養",b:"孩子與我同五行、同陰陽為比肩，日支無合沖刑害，緣分平實",q:["我跟孩子同氣為比肩，像兩個平輩的夥伴，日支沒沖沒合，緣分就靠日子一點一點養 🌱","我們不黏也不撞，各做各的卻肩並肩；他是我同路人，不用天天熱絡也踏實。","命理說這是細水長流的緣，我把他當隊友而非小孩，互相留空間，反而走得長久。"]},
+劫財合:{n:"並肩戰友型",d:"一條心的兄弟兼戰友",b:"孩子與我同五行、異陰陽為劫財；日支六合三合，同氣相吸如左右手",q:["我跟孩子像同一掛的，講義氣、夠麻吉，一個眼神就懂彼此 🤝","八字看起來我們同頻又對盤，他衝在前我頂在後，是過命的交情。","命理說劫財是同五行、異陰陽的同行人——日支又合，我們不只是親子，更像一個眼神就互補、並肩打天下的夥伴。"]},
+劫財沖:{n:"火花戰友型",d:"越吵越親的對手兼隊友",b:"劫財（同五行、異陰陽），日支六沖，能量正面對撞、激出火花",q:["我跟孩子都是直腸子，一言不合就嗆——但吵完反而更黏 🔥","八字看起來我們會互相激盪，像兩塊石頭碰出火，碰完才看見彼此的真心。","命理說這是『沖』的緣分：當下劍拔弩張，和好之後感情更深一層。"]},
+劫財磨:{n:"磨合戰友型",d:"要磨步調的義氣搭檔",b:"劫財（同五行、異陰陽），日支相刑害破，暗處較勁、需對齊步調",q:["我跟孩子都想當主導，難免暗暗較勁、嘴上不饒人 😅","八字看起來我們步調容易卡，但只要肯對齊節奏，就是最挺彼此的人。","命理說這組要『磨』——磨的是脾氣，不變的是骨子裡那份義氣相挺。"]},
+劫財平:{n:"細水戰友型",d:"慢慢養出來的麻吉",b:"劫財（同五行、異陰陽），日支無合沖刑害，緣分平實靠日子養",q:["我跟孩子不黏也不衝，像兩個剛好同路的夥伴，自在就好 🍵","八字看起來我們緣分平平淡淡，相挺的義氣是靠一天天相處養出來的。","命理說這是『平』的緣分——不轟烈，卻能細水長流地並肩走很遠。"]},
+食神合:{n:"天生默契型",d:"我的溫柔有人接得住",b:"我生孩子、且同陰陽為食神（異陰陽則為傷官）；日支六合三合相生最順",q:["孩子是食神，我天生樂意餵養他；日支又相合，連喜歡的事都同一掛——這緣分，像呼吸一樣自然 😊","命理說我生他、又跟他對頻，所以我從不覺得照顧他累，反而像在養我自己最柔軟的那一塊。","八字看起來，我們是「我滋養、他承接」的一組；不用多說，他就懂我那份心意。"]},
+食神沖:{n:"激盪交心型",d:"我餵養他，他偶爾頂我",b:"我生孩子為食神（我生、同陰陽），日支六沖，暖中帶撞、和好更黏",q:["孩子是我的食神，我打從心底想護著他；偏偏日支相沖，他常把我的好意頂回來——可吵完，我們反而更靠近 🤍","八字看起來，我生他、本想好好餵養他，偏日支相沖，他常把好意頂回來；命理說這種沖是把話講開的緣分——不是傷感情，是磨出更實的懂。","我們這組，像我端出一碗熱湯、他卻先嫌燙；等他喝下去那一刻，我就知道——他全收進去了。"]},
+食神磨:{n:"細水磨合型",d:"我心意夠，只是節奏要對",b:"我生孩子為食神（同陰陽），日支相刑害破則暗有摩擦，需對齊步調",q:["孩子是食神，我滋養他從不打折；只是日支相磨，步調一不合就卡卡的——我們這組緣分，要的是耐心對頻 🌱","八字看起來，我的好意不缺，缺的是「同一個節拍」；命理說這種磨，磨的是默契，不是感情。","我學會了：別急著把愛全倒給他，先看他現在能接多少——慢慢磨，反而磨出更深的懂。"]},
+食神平:{n:"細水長流型",d:"不轟烈，但很踏實",b:"我生孩子為食神（同陰陽），日支無合沖刑害，緣分平實靠日子養",q:["孩子是我的食神，我自然而然就想對他好；日支無沖無合，沒有戲劇性——就是一天一天，把感情養厚 ☕","八字看起來，我們不是一見如故那種，是日久生情那種；命理說這緣分平實，反而最耐放。","我不靠激情愛他，我靠每天的一頓飯、一句晚安——這種食神的暖，是熬出來的，不會涼。"]},
+傷官合:{n:"靈光相吸型",d:"才氣對頻、一拍即合",b:"我生孩子、且異陰陽為傷官（才華外露、敢挑戰）；日支六合三合天生對頻",q:["我這孩子聰明又有才氣，偏偏我們頻率還超合，他一開口我就懂他想飛去哪 ✨","八字看起來，他的反骨和我的脾胃是合的——別人覺得他愛唱反調，我卻覺得他在閃閃發光。","命理說傷官需要舞台，而我們這組緣分剛好對頻，我願意當那個替他打燈的人。"]},
+傷官沖:{n:"鋒芒對撞型",d:"針鋒相對、撞完更親",b:"傷官（我生、異陰陽），才高氣盛、挑戰權威；日支六沖能量相激",q:["他傷官外露、聰明嘴又快，又愛挑戰我這權威；日支再相沖，我們常頂得火花四濺——可八字看這種沖是『撞完更親』，和好那份紮實別人羨慕不來 🔥","八字看起來我們日支相沖，他偏要挑戰我這個權威——但我漸漸懂，他不是頂撞，是在長出自己。","命理說傷官有鋒芒，我學著不去壓他的光，把對撞變成把彼此磨得更亮的火。"]},
+傷官磨:{n:"才氣磨合型",d:"口角難免、步調要對齊",b:"傷官（我生、異陰陽），口才銳利易生口舌；日支相刑害破有暗摩擦",q:["我這孩子才氣外露、一張嘴很厲害，我們之間總有些說不清的小摩擦，得慢慢對齊步調 🌱","八字看起來我們是要磨的緣分——他的伶牙俐齒偶爾扎到我，但我知道那不是不愛，是還沒磨順。","命理說傷官鋒利，相處難免有口舌；我提醒自己先聽他說完，別讓才氣變成彼此的刺。"]},
+傷官平:{n:"才情慢養型",d:"緣分平實、日久見才",b:"傷官（我生、異陰陽），聰慧有才需舞台；日支無合沖刑害，緣分平實",q:["他有才氣、愛挑戰，我們的緣分不轟轟烈烈，就是日子一天天把懂得養出來 🌿","八字看起來我們這組平平淡淡，沒有強烈對沖，他的聰明就讓我用時間慢慢去看見、去接住。","命理說傷官需要舞台，我不急著替他鋪天蓋地，只想穩穩陪著，等他的才情自己發光。"]},
+正財合:{n:"貼心守護型",d:"我捨得為他經營，又剛好同頻",b:"我剋孩子、異陰陽為正財（我主動經營、捨得供養）；日支六合三合相吸",q:["孩子是我打從心底想守著的人，偏偏我們日支又相合，連照顧都不費力 💛","八字看起來，我捨得為他穩穩經營、付出，這份用心他接得住、也回得來。","命理說這是正財遇合——我願意為他穩穩經營，他也願意黏著我，這緣分剛剛好。"]},
+正財沖:{n:"硬護碰撞型",d:"我捨得付出、他想衝，撞完更親",b:"正財（我剋、異陰陽，我主動經營），日支六沖、能量相激",q:["我捨得為他穩穩鋪路、打點，偏偏日支相沖，他偏要自己撞一次 😮‍💨","八字看起來，孩子是我的正財、我捨得為他穩穩經營，日支又沖、他偏要自己撞一次；頂歸頂，吵完那份『我捨不得放手』反而更清楚。","命理說沖過之後感情更深——我經營我的、他闖他的，磨合完，我們這組緣分更牢。"]},
+正財磨:{n:"操心磨合型",d:"我為他用心，得慢慢對步調",b:"正財（我剋、異陰陽），日支相刑害破有暗摩擦需對齊",q:["我對他的好是實打實的付出，可日支相刑害，常在小事上你一句我一句 🌀","八字看起來我容易為他操心、也容易嘮叨，其實底下全是「我放不下」三個字。","命理說這組要對齊步調——不是不親，是要練習：我少念一點，他多懂我一點。"]},
+正財平:{n:"細水長情型",d:"我穩穩顧著，日子慢慢養",b:"正財（我剋、異陰陽，踏實經營），日支無合沖刑害，緣分平實",q:["我對他沒有轟轟烈烈，就是日復一日把該做的做好，這份踏實他都看在眼裡 🍵","八字看起來我們不黏也不沖，正財的緣分本就靠日子一天天養。","命理說這叫細水長流——我穩穩守著、踏實過，感情就在柴米油鹽裡慢慢厚起來。"]},
+偏財合:{n:"投緣財神型",d:"天生對頻、相處最開心",b:"我剋孩子、同陰陽為偏財（剋中帶黏）；日支六合三合相吸",q:["八字看起來，孩子是我的偏財、我剋他卻一點不費力，剋中帶黏，日支又相合，他反而把我當最麻吉的大人 😊","命理說這叫偏財逢合：我管得鬆，他人緣好又機靈，我們在一起最常做的事就是大笑。","我們這組緣分不拘小節，他總有辦法把我逗開心——錢沒多賺，快樂倒是天天進帳。"]},
+偏財沖:{n:"對撞活水型",d:"會碰撞、和好後更鐵",b:"偏財（我剋、同陰陽），日支六沖，剋上加沖、激盪後更熱",q:["八字看起來我跟孩子是偏財帶日支相沖——我剋他、他又跟我對撞，常常前一秒嗆、後一秒摟著肩笑 😅","命理說偏財逢沖像活水：我們意見會激盪、誰也不讓，但吵完那頓飯反而吃得特別香。","我們這組緣分天生帶電，他機靈到敢頂我，可每次和好都更鐵一分——熱鬧家庭就是這味。"]},
+偏財磨:{n:"鬥嘴磨合型",d:"愛鬥嘴、要對齊步調",b:"偏財（我剋、同陰陽），日支相刑害破，剋中有暗摩擦",q:["八字看起來我跟孩子是偏財又日支相刑害——我剋他、底下還卡著一點小磨，常為小事鬥嘴卡步調 😮‍💨","命理說偏財帶刑害：我們都愛開玩笑卻容易擦槍走火，得學著把節奏對齊，少一句逞口舌。","我們這組緣分是磨出來的親，他慷慨機靈我都看在眼裡——把摩擦磨成默契，這家就順了。"]},
+偏財平:{n:"細水暖財型",d:"不黏不沖、日子慢慢養",b:"偏財（我剋、同陰陽），日支無合沖刑害，緣分平實",q:["八字看起來我跟孩子是偏財、日支無沖無合——我剋他卻淡淡的，不黏也不撞，日子過得鬆鬆的 🍵","命理說這緣分平實：他人緣好、相處不拘小節，我們的好是靠一頓頓飯、一句句閒聊慢慢養出來的。","我們這組緣分不靠轟轟烈烈，他開心我也跟著輕鬆——細水長流，這份暖會越陪越厚。"]},
+正官合:{n:"端正知心型",d:"他天生會端正我，又剛好同頻",b:"孩子剋我、異陰陽為正官（孩子是端正我、提醒我守分寸的一方）；日支六合三合，約束中有對頻",q:["他剋我異陰陽是正官，是天生會端正我、提醒我守分寸的那個人；好佳哉日支又合，他立的規矩我聽得進、我倆都舒服 😊","八字看起來，這孩子像個小監督，會提醒我別越線；正官講端正，日支又對頻，他說的我也聽得進去。","命理說正官是規矩、日支合是黏——他端正我、我也疼他，管得住又疼得到，難得。"]},
+正官沖:{n:"據理力爭型",d:"規矩底下會頂嘴",b:"孩子正官剋我、是約束我的一方，日支六沖，端正與碰撞並存",q:["他剋我是正官、天生會盯我的分寸，日支又沖——難怪我們常為一條規矩各執一詞、吵到面紅；但八字說沖完更服彼此 😅","八字看起來他天生會盯我的分寸，沖起來各有各的理；可吵完和好，那條規矩反而我倆都認了。","命理說這叫互相約束又互相激盪——他逼我講道理，我也逼出他的骨氣，碰撞完更服彼此。"]},
+正官磨:{n:"分寸拉鋸型",d:"為對錯細細磨合",b:"孩子正官剋我、端正我，日支相刑害破，規矩上易暗較勁",q:["他正官、天生會在分寸上盯我、端正我，偏偏日支相刑害——一條家規，我們得來回對齊好幾遍才順 😮‍💨","八字看起來他會在分寸上跟我較真，磨的是步調不是感情；慢慢調，那把尺就一致了。","命理說這組是約束裡帶暗摩擦——別急著爭誰對，把規矩講清楚，拉鋸就化成默契。"]},
+正官平:{n:"守禮相安型",d:"分寸靠日子慢慢養",b:"孩子正官剋我、守分寸的一方，日支無合沖刑害，規矩淡而長久",q:["他剋我異陰陽是正官——天生懂分寸、會自自然然端正我；日支不沖不合，我們的規矩靠一天一天守出來 🌿","八字看起來這孩子天生懂分寸，緣分平平實實；不用大張旗鼓，端正就在日常裡。","命理說這組是淡而正——他正官、天生會端正我；日支不沖不合，靠日子一天天把那份分寸養牢。"]},
+七殺合:{n:"棋逢知音型",d:"針鋒卻同頻，越鬥越親",b:"孩子剋我、同陰陽為七殺（孩子是給我壓力、磨練我的一方）；日支六合三合相黏",q:["他從小就敢頂我、敢挑戰我，可奇妙的是——氣歸氣，我們還是黏在一起 😊","八字看起來，這孩子是我的棋逢對手，可日支又合，等於吵完還能笑著一起吃飯。","命理說七殺帶合，是緣分把『硬碰硬』和『心貼心』綁在一塊兒，他磨我、也最懂我。"]},
+七殺沖:{n:"針鋒淬火型",d:"撞得最兇，和好最深",b:"七殺（孩子剋我、同陰陽），日支又逢六沖能量對撞",q:["我們這對，講三句就能擦出火花，可每次吵完反而更靠近一點 🔥","八字看起來七殺又遇沖，像兩塊鐵互敲——火光嚇人，敲出來的卻是更利的刃。","命理說這是相激相挺的緣分，他逼我成長，我陪他淬火，誰都不肯先認輸、誰也離不開誰。"]},
+七殺磨:{n:"磨刀較勁型",d:"日常多角力，磨久反更穩",b:"七殺（孩子剋我、同陰陽），日支相刑害破，暗摩擦多需對齊步調",q:["他天生愛跟我較勁，連小事都要爭個高下，常常磨得我又好氣又好笑 😅","八字看起來七殺帶刑害，這緣分是『磨合型』——不是不親，是要彼此對個步調。","命理說磨刀也是相愛的一種，我們把脾氣磨順了，這把刀就成了互相護著的那把。"]},
+七殺平:{n:"對手相敬型",d:"壓力溫和，靠日子養默契",b:"七殺（孩子剋我、同陰陽），日支無合沖刑害，緣分平實",q:["他像個讓我又敬又服的小對手，給我壓力卻不刺人，日子久了反而生出默契 🙂","八字看起來七殺平穩，這孩子的強勢是溫的——督促我，卻不至於針鋒相對。","命理說七殺是孩子剋我、本帶壓力；但日支不沖不合，這份壓力是溫的——靠日子慢慢養，今天敬他一分、明天他讓我一步，棋逢對手也能相敬如賓。"]},
+正印合:{n:"貼心暖窩型",d:"天生黏我的小暖爐",b:"孩子生我、異陰陽為正印（孩子來蔭我、暖我）；日支六合三合，蔭我又對頻",q:["八字看起來，這孩子是來蔭我的——他一個眼神，我心就軟了一半 🫶","正印貼心，日支又合，我們娘倆（爺倆）像同一個頻道，不用多說就懂彼此。","命理說這叫母慈子孝的緣分，他暖我、我疼他，這份依靠是日子裡最穩的底。"]},
+正印沖:{n:"犟暖回頭型",d:"嘴上頂、心裡疼的小棉襖",b:"孩子生我為正印（異陰陽、主貼心），日支六沖，先撞後暖",q:["他正印的底子是來暖我的，可日支相沖——先跟我犟兩句，轉頭又來蹭我 😮‍💨","八字這組緣分愛碰撞，但吵完和好那一刻，他抱我抱得最緊。","命理說沖過再合更深，這孩子是把愛藏在頂嘴後面的小棉襖。"]},
+正印磨:{n:"慢熱貼心型",d:"要對上步調才化開的暖",b:"孩子生我為正印（異陰陽），日支刑害破，暖意需磨合",q:["他骨子裡是正印、是想對我好的，只是日支相磨——好意常用錯方式，得彼此校一校 🌿","八字看起來我們步調容易岔開，一句話沒對上就鬧彆扭，但這是要磨、不是不親。","命理說這份緣要慢慢順，等我們對上節奏，他那份貼心就一點一點化開了。"]},
+正印平:{n:"細水長暖型",d:"不黏不離、日久生暖",b:"孩子生我為正印（異陰陽、主依靠），日支無合沖刑害，緣分平實",q:["他正印的暖不熱鬧，是那種安安靜靜守著我的依靠——不黏，卻一直都在 🍵","八字這組緣分很平實，沒有大起大落，全靠一天一天相處養出來。","命理說這叫細水長流，他的貼心不搶戲，可日子越久，我越離不開。"]},
+偏印合:{n:"靜水默契型",d:"外冷內熱，無聲也懂彼此",b:"孩子生我、同陰陽為偏印（同為印星、生我，惟生中帶保留）；日支六合三合相黏",q:["他不太說愛，可我們日支天生合拍，一個眼神我就懂他藏在心裡的暖 🤍","八字看起來，他像偏印那種靜靜的庇蔭——不黏不膩，卻總在我需要時剛好在。","命理說我們這組是默契型，他話少，但同一個頻率，沉默也不尷尬。"]},
+偏印沖:{n:"悶雷激盪型",d:"藏得深又會頂，吵完更近",b:"偏印（孩子生我、同陰陽），靜中藏火；日支六沖，碰撞後反更貼",q:["他偏印、是那種靜靜生我護我卻不太說的孩子；脾氣悶得像雷，日支又沖，一碰就火花——可吵完那晚，他反而靠得更近 ⚡","八字看起來我們會激盪，他不愛解釋，但每次衝突後我才更看懂他藏起來的在乎。","命理說沖過才知深，他外冷我急，磨完一場，緣分反而更扎實。"]},
+偏印磨:{n:"暗流磨心型",d:"他不說，我得慢慢猜慢慢磨",b:"偏印（孩子生我、同陰陽），本就藏；日支相刑害破，口舌多需對齊",q:["他偏印藏太深，日支又相刑——很多悶氣他不講，我得一點一點去猜、去磨 🌫️","八字看起來我們步調容易岔開，常為小事卡卡的，但磨歸磨，他還是我最在意的孩子。","命理說這組要對頻，他冷我急時別硬碰，慢下來對齊，暗流就化成默契。"]},
+偏印平:{n:"深井慢養型",d:"他像深井，日子久了才見底",b:"偏印（孩子生我、同陰陽、生中帶保留），日支無合沖刑害，緣分平實",q:["他偏印那種人，像一口深井，不沸騰也不喧嘩，日子過久了我才慢慢看見井底的溫 🍃","八字看起來我們緣分平實，沒大起大落，他不擅言愛，但每天的尋常裡都藏著他的守護。","命理說這組靠日子養，急不來——他外冷內熱，我就陪著，一年年把感情養深。"]}
 };
-function rarity(name){ const p=TITLE_FREQ[name]||5, oneIn=Math.max(2,Math.round(100/p));
-  const tier=p<2?"極稀有":(p<5?"稀有":(p<12?"少見":"經典")); const cls=p<2?"r0":(p<5?"r1":""); return {p,oneIn,tier,cls}; }
-
-document.getElementById("stat").innerHTML=
-  "<div class='b'><b>12</b> 種稱號</div><div class='b'><b>36</b> 句金句</div><div class='b'>最稀有 <b>彼此貴人型</b> 1.6%</div><div class='b'>最常見 <b>恩星守護型</b> 31%</div>";
-
-document.getElementById("cards").innerHTML=TYPES.map((t,i)=>{
-  const ra=rarity(t.name);
-  const qs=(TITLE_QUOTE[t.name]||[]).map(q=>"<li>"+q+"</li>").join("");
-  return "<div class='card'><div class='head'><span class='emo'>"+t.emo+"</span>"
-    +"<span class='name'>"+t.name+"</span>"
-    +"<span class='rare "+ra.cls+"'>"+ra.tier+" ・ "+ra.p+"% ・ 約每 "+ra.oneIn+" 個家庭 1 位</span>"
-    +"<span style='color:#b5873a;font-size:12px;margin-left:auto'>判定序 #"+(i+1)+"</span></div>"
-    +"<div class='why'>命理依據："+t.why+"</div>"
-    +"<div class='desc'>"+t.desc+"</div>"
-    +"<ul class='quotes'>"+qs+"</ul></div>";
-}).join("");
-</script>
-</body>
-</html>
+const SS_ORDER=["比肩","劫財","食神","傷官","正財","偏財","正官","七殺","正印","偏印"];
+const SS_MEAN={比肩:"同五行同陰陽・手足平等",劫財:"同五行異陰陽・義氣戰友",食神:"我生(同陰陽)・滋養溫和",傷官:"我生(異陰陽)・才華反骨",正財:"我剋(異陰陽)・捨得經營",偏財:"我剋(同陰陽)・剋中帶黏",正官:"孩子剋我(異陰陽)・他端正我",七殺:"孩子剋我(同陰陽)・他磨我",正印:"孩子生我(異陰陽)・他蔭我",偏印:"孩子生我(同陰陽)・偏靜庇蔭"};
+const DZ_ORDER=["合","沖","磨","平"]; const DZ_CLS={合:"h",沖:"c",磨:"m",平:"p"};
+function rarity(dz){ const p=(DZ_FREQ[dz]||30)/10, oneIn=Math.max(2,Math.round(100/p)); const tier=p<2?"稀有":(p<3.5?"少見":"經典"); return tier+" ・ "+p.toFixed(1)+"% ・ 約每 "+oneIn+" 家庭 1 位"; }
+let html="";
+SS_ORDER.forEach(ss=>{
+  html+="<div class='group'><h2>"+(SS_EMO[ss]||"")+" "+ss+"</h2><div class='gm'>"+SS_MEAN[ss]+"</div></div>";
+  DZ_ORDER.forEach(dz=>{ const c=PC_CELL[ss+dz]; if(!c) return;
+    const qs=c.q.map(q=>"<li>"+q+"</li>").join("");
+    html+="<div class='card'><div class='head'><span class='emo'>"+(SS_EMO[ss]||"")+"</span><span class='name'>"+c.n+"</span>"
+      +"<span class='dz "+DZ_CLS[dz]+"'>日支"+dz+"</span><span class='rare'>"+rarity(dz)+"</span></div>"
+      +"<div class='why'>命理依據：<b>"+c.b+"</b></div><div class='desc'>"+c.d+"</div>"
+      +"<ul class='quotes'>"+qs+"</ul></div>";
+  });
+});
+document.getElementById("cards").innerHTML=html;
+</script></body></html>
