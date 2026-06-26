@@ -1,7 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+  <!-- 財富煉金術品牌 favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><circle cx='64' cy='64' r='63' fill='%230f172a'/><polygon points='64,20 96,68 79,68 79,106 49,106 49,68 32,68' fill='%23F4C430'/></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>父母子女・八字合不合｜親子緣分解讀（傳統文化・參考娛樂）</title>
 <meta name="description" content="輸入爸媽與孩子的生日時辰，用傳統八字看親子緣分，給你一份溫暖、好懂、能照做的相處之道。八字屬傳統文化、非科學，聽個參考、博君一笑。">
@@ -11,7 +13,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%233c2438'/%3E%3Cpath d='M50 24 L72 62 L28 62 Z' fill='none' stroke='%23e7c477' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='11' fill='%23e7c477'/%3E%3Ctext x='50' y='56' text-anchor='middle' font-size='13' font-family='serif' font-weight='700' fill='%233c2438'%3E金%3C/text%3E%3C/svg%3E">
 <style>
   :root{
     --ink:#33291f; --soft:#7a6b58; --faint:#9b8b76; --line:#ece2d3;
@@ -1515,104 +1516,86 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   A=A||{}; const cx=W/2;
   const prog=A.prog==null?1:A.prog, midA=A.midA==null?1:A.midA, quoteA=A.quoteA==null?1:A.quoteA, ctaA=A.ctaA==null?1:A.ctaA, shine=A.shine;
   ctx.textAlign="center"; ctx.textBaseline="alphabetic";
-  const bg=ctx.createLinearGradient(0,0,W*0.3,H);
-  bg.addColorStop(0,"#191019"); bg.addColorStop(.5,"#33203a"); bg.addColorStop(1,"#241627");
+  const ct=coupleTitle(r), rare=titleRarity(r?ct.name:"");
+  // 依分數取主色（日系雜誌大色圈）
+  const acc = r.score>=93?"#c8452f":(r.score>=86?"#d8922a":(r.score>=81?"#3f76a3":"#8a6aa0"));
+  const accL= r.score>=93?"#e07a5f":(r.score>=86?"#edb24c":(r.score>=81?"#6fa0c6":"#a98cc0"));
+  const ink="#3a3128", soft="#a99c84";
+  // 米色底
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,"#f7f1e4"); bg.addColorStop(1,"#ece1cf");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  // 幾何點綴（極淡，呼應設計靈感）
   ctx.save();
-  const cyG=big?700:560;
-  for(let i=0;i<3;i++){ ctx.strokeStyle="rgba(231,196,119,"+(0.05-i*0.012)+")"; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(cx,cyG,(big?320:280)+i*70,0,Math.PI*2); ctx.stroke(); }
-  const gl=ctx.createRadialGradient(cx,cyG,60,cx,cyG,W*0.85);
-  gl.addColorStop(0,"rgba(231,196,119,.20)"); gl.addColorStop(1,"rgba(231,196,119,0)");
-  ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(58,49,40,.06)"; ctx.lineWidth=2;
+  [[W-30,30,205],[W+50,90,330],[70,H-30,180],[-10,H+10,310]].forEach(a=>{ ctx.beginPath(); ctx.arc(a[0],a[1],a[2],0,7); ctx.stroke(); });
+  ctx.fillStyle=acc; ctx.globalAlpha=.12;
+  ctx.beginPath(); ctx.arc(W-118,H*0.155,30,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc(108,H*0.42,17,0,7); ctx.fill();
+  ctx.globalAlpha=.07;
+  for(let i=0;i<5;i++)for(let j=0;j<=i;j++){ ctx.beginPath(); ctx.arc(W-176+j*26-i*13, H*0.80+i*25, 4,0,7); ctx.fill(); }
   ctx.restore();
-  ctx.strokeStyle="rgba(231,196,119,.5)"; ctx.lineWidth=3; ctx.strokeRect(30,30,W-60,H-60);
-  ctx.strokeStyle="rgba(231,196,119,.22)"; ctx.lineWidth=1.5; ctx.strokeRect(46,46,W-92,H-92);
-  ctx.strokeStyle="#e7c477"; ctx.lineWidth=4; const cl=46;
-  [[30,30,1,1],[W-30,30,-1,1],[30,H-30,1,-1],[W-30,H-30,-1,-1]].forEach(([x,y,sx,sy])=>{
-    ctx.beginPath(); ctx.moveTo(x+sx*14,y+sy*14); ctx.lineTo(x+sx*(14+cl),y+sy*14);
-    ctx.moveTo(x+sx*14,y+sy*14); ctx.lineTo(x+sx*14,y+sy*(14+cl)); ctx.stroke(); });
 
-  ctx.fillStyle="#e7c477"; ctx.font='700 '+(big?38:34)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("☯  財富煉金術", cx, big?116:108);
-  ctx.fillStyle="rgba(231,196,119,.7)"; ctx.font='500 '+(big?22:20)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("W E A L T H   A L C H E M Y", cx, big?150:140);
-  ctx.font='700 '+(big?30:28)+'px "Noto Sans TC",sans-serif';
-  const rb="親子緣分・八字測驗結果", rbw=ctx.measureText(rb).width+70, rbY=big?184:172;
-  roundRect(ctx, cx-rbw/2, rbY, rbw, big?60:56, 30);
-  ctx.fillStyle="rgba(231,196,119,.16)"; ctx.fill();
-  ctx.strokeStyle="rgba(231,196,119,.5)"; ctx.lineWidth=2; ctx.stroke();
-  ctx.fillStyle="#f6ecd8"; ctx.fillText(rb, cx, rbY+(big?41:39));
-  ctx.fillStyle="#fff"; ctx.font='900 '+(big?66:58)+'px "Noto Serif TC",serif';
-  ctx.fillText(clip(nameA,6)+"  ✕  "+clip(nameB,6), cx, big?322:286);
+  // 品牌 kicker
+  ctx.fillStyle="#b5873a"; ctx.font='700 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("財 富 煉 金 術", cx, big?134:114);
+  ctx.fillStyle=soft; ctx.font='500 '+(big?23:21)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("親 子 緣 分 ・ 八 字 測 驗", cx, big?174:148);
 
-  // 分數大圓環（prog 控制掃描與計數）
-  const cy=big?700:560, R=big?218:176;
-  ctx.lineCap="round";
-  ctx.lineWidth=big?32:28; ctx.strokeStyle="rgba(255,255,255,.10)";
-  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
-  const grad=ctx.createLinearGradient(cx-R,cy-R,cx+R,cy+R);
-  grad.addColorStop(0,"#f4d98f"); grad.addColorStop(1,"#c08a2d");
-  ctx.strokeStyle=grad;
-  if(prog>0){ ctx.beginPath(); ctx.arc(cx,cy,R,-Math.PI/2,-Math.PI/2+Math.PI*2*(r.score/100)*prog); ctx.stroke(); }
-  const shown=Math.round(r.score*prog);
-  const digits=String(r.score).length;
-  const numF=Math.round((big?226:188)*(digits>=3?0.62:(digits>=2?0.92:1)));
+  // HERO 大色圈（分數）
+  const cyc=big?560:430, R=big?258:208;
+  ctx.strokeStyle=accL; ctx.globalAlpha=.4; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(cx,cyc,R+20*prog+4,0,7); ctx.stroke(); ctx.globalAlpha=1;
+  const cg=ctx.createRadialGradient(cx-R*0.32,cyc-R*0.36,R*0.2,cx,cyc,R);
+  cg.addColorStop(0,accL); cg.addColorStop(1,acc);
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cyc,R,0,7); ctx.fill();
+  const shown=Math.round(r.score*prog), digits=String(r.score).length;
+  const numF=Math.round((big?252:208)*(digits>=3?0.6:(digits>=2?0.9:1)));
   ctx.fillStyle="#fff"; ctx.textBaseline="middle"; ctx.font='900 '+numF+'px "Noto Serif TC",serif';
-  ctx.fillText(shown, cx, cy-(big?18:14));
+  ctx.fillText(shown, cx, cyc-(big?20:16));
   ctx.textBaseline="alphabetic";
-  ctx.fillStyle="#e7c477"; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("分 ／ 100", cx, cy+(big?118:96));
+  ctx.fillStyle="rgba(255,255,255,.85)"; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("分 ╱ 100", cx, cyc+(big?130:106));
 
-  // 稱號（主標）+ 徽章（midA 淡入）
+  // 名字 + 稱號大標 + 稀有度（midA 淡入）
   ctx.save(); ctx.globalAlpha=midA;
-  const ct=coupleTitle(r);
-  ctx.fillStyle="#fff"; ctx.font='700 '+(big?60:50)+'px "Noto Serif TC",serif';
-  ctx.fillText(ct.emo+" "+ct.name, cx, cy+R+(big?96:84));
-  const rare=titleRarity(ct.name);
-  const rtxt=(rare.p<5?"✦ ":"")+rare.tier+" ・ 約每 "+rare.oneIn+" 個家庭 1 位";
-  ctx.fillStyle="#f0d28a"; ctx.font='600 '+(big?34:29)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText(rtxt, cx, cy+R+(big?142:124));
-  const badge="命理關係・"+r.shishenAB;
-  ctx.font='700 '+(big?40:36)+'px "Noto Sans TC",sans-serif';
-  const bw=ctx.measureText(badge).width+80, by=cy+R+(big?188:162), bh=big?76:68;
-  roundRect(ctx, cx-bw/2, by, bw, bh, bh/2);
-  ctx.fillStyle="rgba(231,196,119,.16)"; ctx.fill();
-  ctx.strokeStyle="rgba(231,196,119,.6)"; ctx.lineWidth=2; ctx.stroke();
-  ctx.fillStyle="#e7c477"; ctx.textBaseline="middle"; ctx.fillText(badge, cx, by+bh/2);
-  ctx.textBaseline="alphabetic"; ctx.restore();
-
-  // 金句（quoteA 淡入）
-  ctx.save(); ctx.globalAlpha=quoteA;
-  const quoteF=big?54:46, lh=big?86:72;
-  ctx.font='700 '+quoteF+'px "Noto Serif TC",serif';
-  const lines=wrapSmart(ctx, shareHook(r), W-(big?240:210), 3);
-  const qCenter=big?1300:H-320;
-  const qTop=qCenter-(lines.length-1)*lh/2;
-  const padX=big?36:30, ph=quoteF*1.42;
-  lines.forEach((ln,i)=>{ const ly=qTop+i*lh, tw=ctx.measureText(ln).width;
-    roundRect(ctx, cx-tw/2-padX, ly-ph*0.70, tw+padX*2, ph, big?22:18);
-    ctx.fillStyle="rgba(231,196,119,.16)"; ctx.fill(); });
-  ctx.fillStyle="#fff7e8";
-  lines.forEach((ln,i)=>ctx.fillText(ln, cx, qTop+i*lh));
+  const namesY=cyc+R+(big?92:76);
+  ctx.fillStyle=soft; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText(clip(nameA,6)+"　✕　"+clip(nameB,6), cx, namesY);
+  const titleY=namesY+(big?106:84);
+  ctx.fillStyle=ink; ctx.font='700 '+(big?104:86)+'px "Noto Serif TC",serif';
+  ctx.fillText(ct.emo+" "+ct.name, cx, titleY);
+  const rareY=titleY+(big?62:50);
+  ctx.fillStyle=acc; ctx.font='600 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText((rare.p<5?"✦ ":"")+rare.tier+" ・ 約每 "+rare.oneIn+" 個家庭 1 位", cx, rareY);
   ctx.restore();
 
-  // CTA（ctaA 淡入）——含回流入口：IG 帳號＋私訊關鍵字（被轉發也找得到路）
+  // 分隔線（細＋中央小點）
+  const divY=rareY+(big?56:46);
+  ctx.strokeStyle="#d8cdb8"; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-(big?160:128),divY); ctx.lineTo(cx-24,divY); ctx.moveTo(cx+24,divY); ctx.lineTo(cx+(big?160:128),divY); ctx.stroke();
+  ctx.fillStyle=acc; ctx.beginPath(); ctx.arc(cx,divY,5,0,7); ctx.fill();
+
+  // 金句（襯線・無膠囊）
+  ctx.save(); ctx.globalAlpha=quoteA;
+  const quoteF=big?52:44, lh=big?80:68;
+  ctx.font='500 '+quoteF+'px "Noto Serif TC",serif';
+  const lines=wrapSmart(ctx, shareHook(r), W-(big?260:200), 3);
+  const qTop=divY+(big?98:80);
+  ctx.fillStyle=ink; lines.forEach((ln,i)=>ctx.fillText(ln, cx, qTop+i*lh));
+  ctx.restore();
+
+  // 底部 CTA + 回流入口
   ctx.save(); ctx.globalAlpha=ctaA;
-  const c1=big?H-356:H-196, c2=big?H-300:H-150, c3=big?H-256:H-112, c4=big?H-214:H-74;
-  ctx.fillStyle="#e7c477"; ctx.font='700 '+(big?46:40)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("👀 你跟孩子，是哪一組？", cx, c1);
-  ctx.fillStyle="rgba(246,236,216,.92)"; ctx.font='500 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("免費測測看・標記另一半比分數", cx, c2);
-  // 回流列（金底膠囊）
-  ctx.font='700 '+(big?30:26)+'px "Noto Sans TC",sans-serif';
-  const ig="IG @jeff.walk2light ・ 私訊「八字」", iw=ctx.measureText(ig).width+56, ih=big?56:50;
-  roundRect(ctx, cx-iw/2, c3-ih*0.72, iw, ih, ih/2);
-  ctx.fillStyle="rgba(231,196,119,.18)"; ctx.fill();
-  ctx.strokeStyle="rgba(231,196,119,.55)"; ctx.lineWidth=2; ctx.stroke();
-  ctx.fillStyle="#f0d28a"; ctx.textBaseline="middle"; ctx.fillText(ig, cx, c3-ih*0.72+ih/2); ctx.textBaseline="alphabetic";
-  ctx.fillStyle="rgba(246,236,216,.5)"; ctx.font='400 '+(big?23:21)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("八字屬傳統文化・參考娛樂", cx, c4);
+  const discY=H-(big?86:60), igY=discY-(big?58:48), ctaY=igY-(big?56:46);
+  ctx.strokeStyle="#dcd2bf"; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(cx-(big?270:215),ctaY-(big?54:46)); ctx.lineTo(cx+(big?270:215),ctaY-(big?54:46)); ctx.stroke();
+  ctx.fillStyle=soft; ctx.font='500 '+(big?29:26)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("標另一半一起測・看你們各是哪一型", cx, ctaY);
+  ctx.fillStyle=acc; ctx.font='700 '+(big?31:27)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("IG @jeff.walk2light ・ 私訊「八字」解鎖完整版", cx, igY);
+  ctx.fillStyle="#bdb3a0"; ctx.font='400 '+(big?22:20)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("八字屬傳統文化・參考娛樂", cx, discY);
   ctx.restore();
 
   // 金色掃光（動態用）
