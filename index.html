@@ -1470,41 +1470,60 @@ $("printBtn").addEventListener("click",()=>{ window.print(); });
 
 /* ========== 一鍵分享成圖（IG/FB） ========== */
 /* 病毒式金句：依「這對的實際解讀」總結出 3 句（不是隨機，而是對應內文） */
-const HOOK_SS={
-  比肩:"八字說我跟孩子是同款硬脾氣 🤝 最懂也最會吵",
-  劫財:"命理認證：我們兩個都不肯認輸 😆 吵完又超黏",
-  食神:"這孩子是我才華與溫柔的延伸，疼他心甘情願 🍼",
-  傷官:"八字說我家有個反骨小天才 🎤 給他舞台就發光",
-  正財:"命理說孩子是我最想守護的心頭肉 💎 難怪我管很兇",
-  偏財:"八字說這孩子帶財又帶笑 🍀 是我的開心果",
-  正官:"孩子一出生我就被升級成大人 😅 八字蓋章認證",
-  七殺:"命理說我跟孩子像兩個將軍 ⚔️ 會對撞、也最挺彼此",
-  正印:"八字說這孩子是來疼我的小天使 🥹 戀家又貼心",
-  偏印:"我家有個外冷內熱的小哲學家 🌙 愛你不說出口"
+/* 金句＝依「稱號（兩人八字最核心的緣分訊號）」策展，每型 3 句皆切題、最有感的排第一。
+   不再隨機亂湊；可被「全組合對照表」完整列舉。 */
+const TITLE_QUOTE={
+  互為恩星型:[
+    "命理說，我們是彼此命裡那塊缺角 🧩 剛好補上對方",
+    "八字認證的天作之合 🌟 我們是來成全彼此的",
+    "他旺我、我也旺他——這種緣，一輩子難得 ✨"],
+  恩星守護型:[
+    "命理說我剛好是孩子命裡最需要的那塊 🛡️",
+    "八字蓋章：我是來守護他的那個人 💛",
+    "他命裡缺的，剛好我有——這就是緣分 🍀"],
+  默契神隊友型:[
+    "八字說我們日支六合 💞 一個眼神就懂",
+    "天生對頻的我們 🎯 不用多說也默契",
+    "命理認證的神隊友 🤝 我們是同一國的"],
+  冷暖相濟型:[
+    "命理說我剛好是孩子命裡需要的溫度 🔥 暖哭",
+    "他命裡偏冷，我正好帶來暖——天生互暖 ☀️",
+    "八字說我們冷暖剛好相濟 🍵 在一起最舒服"],
+  並肩戰友型:[
+    "我們像兩個將軍 ⚔️ 會對撞、卻最挺彼此",
+    "越頂嘴越像我——他不是叛逆，是想被當大人 😮‍💨",
+    "命理說我們是並肩的戰友 🛡️ 吵歸吵，背靠背"],
+  越吵越親型:[
+    "我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深",
+    "八字說我們越吵越親 ❤️‍🔥 吵完又超黏",
+    "命裡天生對沖——但和好那一刻，最暖 🤍"],
+  互補神隊友型:[
+    "我們五行剛好互補 🧩 我缺的他剛好有",
+    "八字說我們是互補的一對 ⚖️ 湊在一起才完整",
+    "他補我、我補他——天生的好搭檔 🤝"],
+  活水源頭型:[
+    "八字說我是孩子的活水源頭 💧 給得自然又心甘",
+    "我對他幾乎有求必應 😅 學放手是我的功課",
+    "命理說我是來滋養他的——當後盾最甘願 🌱"],
+  小棉襖型:[
+    "八字說這孩子是來疼我的小棉襖 🧸 戀家又貼心",
+    "命理認證：他是來暖我的 🥹 一個眼神就心軟",
+    "這孩子天生黏我、暖我——上輩子的情人吧 💛"],
+  同款靈魂型:[
+    "八字說我跟孩子是同款靈魂 🪞 最懂也最像",
+    "同一種硬脾氣 😆 最懂彼此、也最會吵",
+    "命理認證的同款人——他就是另一個我 ✨"],
+  彼此貴人型:[
+    "天啊我們命裡互為貴人 ✨ 這輩子真的賺到",
+    "八字說我們是彼此的福星 🍀 互相旺一輩子",
+    "命理認證：遇到彼此，就是來旺對方的 🫶"],
+  細水長流型:[
+    "我們的緣分，是日子慢慢養出來的 🌱",
+    "不轟轟烈烈，但越往後越懂、越久越深 🍵",
+    "八字說我們細水長流——平淡，卻最扎實 🤍"]
 };
-function buildHooks(r){
-  const out=[];
-  // ① 這段關係的命理本質（十神）
-  out.push(HOOK_SS[r.shishenAB] || "測完更懂孩子，也更懂自己 ♡");
-  // ② 命裡最亮的那個緣分訊號
-  if(r.guiren==="both") out.push("天啊我們命裡互為貴人 ✨ 這輩子真的賺到");
-  else if(r.guiren==="childIsNoble") out.push("八字說孩子是我的天乙貴人 🍀 來旺我的");
-  else if(r.guiren==="parentIsNoble") out.push("命理說我是孩子的貴人 🫶 那我要好好罩他");
-  else if(r.tiaohouHit) out.push("命理說我剛好是孩子命裡需要的溫度 🔥 暖哭");
-  else if(r.liuhe) out.push("八字說我們日支六合 💞 天生一個眼神就懂");
-  else if(r.complement) out.push("我們五行剛好互補 🧩 我缺的他剛好有");
-  else if(r.score>=94) out.push("八字緣分分數爆表 ✨ 這種好命不是人人有");
-  else out.push("緣分藏在每天的相處裡 ☕ 慢慢養最扎實");
-  // ③ 最該記住的相處心法（依命局關鍵）
-  if(r.liuchong) out.push("我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深");
-  else if(r.relA==="子剋父"||r.officerHeavy) out.push("越頂嘴越像我——他不是叛逆，是想被當大人看 😮‍💨");
-  else if(r.wsB==="囚"||r.wsB==="死") out.push("八字說孩子先天能量弱 🫶 最需要我穩穩托住");
-  else if(r.wsB==="旺") out.push("孩子先天能量旺、超有主見 🚀 給方向別硬壓");
-  else if(r.relA==="父生子") out.push("我對他幾乎有求必應 😅 學著放手是我的功課");
-  else out.push("先聽懂、再給建議 🤍 被懂的孩子才會靠近你");
-  return out;
-}
-function shareHook(r){ const L=buildHooks(r); return L[(state.hookIdx||0)%L.length]; }
+function quoteList(r){ return TITLE_QUOTE[coupleTitle(r).name] || ["測完更懂孩子，也更懂自己 ♡"]; }
+function shareHook(r){ const L=quoteList(r); return L[(state.hookIdx||0)%L.length]; }
 function shareCaption(r,nameA,nameB){
   const t=tierOf(r.score);
   const url=(location.origin&&location.origin.indexOf("http")===0)?location.origin+location.pathname:"https://hsien33.github.io/qinzi-bazi/";
@@ -1599,80 +1618,92 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   A=A||{}; const cx=W/2;
   const prog=A.prog==null?1:A.prog, midA=A.midA==null?1:A.midA, quoteA=A.quoteA==null?1:A.quoteA, ctaA=A.ctaA==null?1:A.ctaA, shine=A.shine;
   ctx.textAlign="center"; ctx.textBaseline="alphabetic";
-  const ct=coupleTitle(r), rare=titleRarity(r?ct.name:"");
-  // 依分數取主色（日系雜誌大色圈）
-  const acc = r.score>=93?"#c8452f":(r.score>=86?"#d8922a":(r.score>=81?"#3f76a3":"#8a6aa0"));
-  const accL= r.score>=93?"#e07a5f":(r.score>=86?"#edb24c":(r.score>=81?"#6fa0c6":"#a98cc0"));
-  const ink="#3a3128", soft="#a99c84";
+  const ct=coupleTitle(r), rare=titleRarity(ct.name);
+  // 依分數取主色（立體大色圈：高光/亮/基/暗 四階）
+  const ACC=[
+    {h:"#f3a98f",l:"#e07a5f",b:"#c8452f",d:"#9c3320"},
+    {h:"#f5d79a",l:"#edb24c",b:"#d8922a",d:"#a96b16"},
+    {h:"#a9cbe6",l:"#6fa0c6",b:"#3f76a3",d:"#2c5a82"},
+    {h:"#cdb9e0",l:"#a98cc0",b:"#8a6aa0",d:"#654a7d"}
+  ][ r.score>=93?0:(r.score>=86?1:(r.score>=81?2:3)) ];
+  const acc=ACC.b, ink="#3a3128", soft="#a99c84";
   // 米色底
   const bg=ctx.createLinearGradient(0,0,0,H);
   bg.addColorStop(0,"#f7f1e4"); bg.addColorStop(1,"#ece1cf");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-  // 幾何點綴（極淡，呼應設計靈感）
+  // 幾何點綴（極淡）
   ctx.save();
-  ctx.strokeStyle="rgba(58,49,40,.06)"; ctx.lineWidth=2;
+  ctx.strokeStyle="rgba(58,49,40,.055)"; ctx.lineWidth=2;
   [[W-30,30,205],[W+50,90,330],[70,H-30,180],[-10,H+10,310]].forEach(a=>{ ctx.beginPath(); ctx.arc(a[0],a[1],a[2],0,7); ctx.stroke(); });
-  ctx.fillStyle=acc; ctx.globalAlpha=.12;
-  ctx.beginPath(); ctx.arc(W-118,H*0.155,30,0,7); ctx.fill();
-  ctx.beginPath(); ctx.arc(108,H*0.42,17,0,7); ctx.fill();
-  ctx.globalAlpha=.07;
-  for(let i=0;i<5;i++)for(let j=0;j<=i;j++){ ctx.beginPath(); ctx.arc(W-176+j*26-i*13, H*0.80+i*25, 4,0,7); ctx.fill(); }
+  ctx.fillStyle=acc; ctx.globalAlpha=.10;
+  ctx.beginPath(); ctx.arc(W-118,H*0.16,28,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc(104,H*0.46,16,0,7); ctx.fill();
+  ctx.globalAlpha=.06;
+  for(let i=0;i<5;i++)for(let j=0;j<=i;j++){ ctx.beginPath(); ctx.arc(W-176+j*26-i*13, H*0.82+i*25, 4,0,7); ctx.fill(); }
   ctx.restore();
 
-  // 品牌 kicker
-  ctx.fillStyle="#b5873a"; ctx.font='700 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("財 富 煉 金 術", cx, big?134:114);
-  ctx.fillStyle=soft; ctx.font='500 '+(big?23:21)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("親 子 緣 分 ・ 八 字 測 驗", cx, big?174:148);
+  // 品牌一句（不堆 logo）
+  ctx.fillStyle="#b5873a"; ctx.font='700 '+(big?32:28)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("財富煉金術 ・ 親子緣分", cx, big?140:118);
 
-  // HERO 大色圈（分數）
-  const cyc=big?560:430, R=big?258:208;
-  ctx.strokeStyle=accL; ctx.globalAlpha=.4; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.arc(cx,cyc,R+20*prog+4,0,7); ctx.stroke(); ctx.globalAlpha=1;
-  const cg=ctx.createRadialGradient(cx-R*0.32,cyc-R*0.36,R*0.2,cx,cyc,R);
-  cg.addColorStop(0,accL); cg.addColorStop(1,acc);
+  // HERO 立體大色圈（分數）
+  const cyc=big?580:430, R=big?270:216;
+  ctx.save(); ctx.fillStyle="rgba(120,86,40,.16)";
+  ctx.beginPath(); ctx.ellipse(cx,cyc+R*0.95,R*0.78,R*0.16,0,0,7); ctx.fill(); ctx.restore();
+  const cg=ctx.createRadialGradient(cx-R*0.40,cyc-R*0.44,R*0.08, cx,cyc,R*1.08);
+  cg.addColorStop(0,ACC.h); cg.addColorStop(0.46,ACC.l); cg.addColorStop(1,ACC.d);
   ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cyc,R,0,7); ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cyc,R,0,7); ctx.clip();
+  const rim=ctx.createRadialGradient(cx,cyc-R*0.15,R*0.55,cx,cyc+R*0.10,R*1.05);
+  rim.addColorStop(0,"rgba(0,0,0,0)"); rim.addColorStop(1,"rgba(0,0,0,.30)");
+  ctx.fillStyle=rim; ctx.fillRect(cx-R,cyc-R,R*2,R*2);
+  const hl=ctx.createRadialGradient(cx-R*0.40,cyc-R*0.46,2,cx-R*0.40,cyc-R*0.46,R*0.80);
+  hl.addColorStop(0,"rgba(255,255,255,.55)"); hl.addColorStop(1,"rgba(255,255,255,0)");
+  ctx.fillStyle=hl; ctx.fillRect(cx-R,cyc-R,R*2,R*2); ctx.restore();
+  ctx.lineWidth=2.5; ctx.strokeStyle="rgba(255,255,255,.38)"; ctx.beginPath(); ctx.arc(cx,cyc,R-1,0,7); ctx.stroke();
   const shown=Math.round(r.score*prog), digits=String(r.score).length;
-  const numF=Math.round((big?252:208)*(digits>=3?0.6:(digits>=2?0.9:1)));
+  const numF=Math.round((big?264:212)*(digits>=3?0.6:(digits>=2?0.9:1)));
+  ctx.save(); ctx.shadowColor="rgba(0,0,0,.18)"; ctx.shadowBlur=big?18:14; ctx.shadowOffsetY=4;
   ctx.fillStyle="#fff"; ctx.textBaseline="middle"; ctx.font='900 '+numF+'px "Noto Serif TC",serif';
-  ctx.fillText(shown, cx, cyc-(big?20:16));
+  ctx.fillText(shown, cx, cyc-(big?18:14)); ctx.restore();
   ctx.textBaseline="alphabetic";
-  ctx.fillStyle="rgba(255,255,255,.85)"; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
-  ctx.fillText("分 ╱ 100", cx, cyc+(big?130:106));
+  ctx.fillStyle="rgba(255,255,255,.9)"; ctx.font='600 '+(big?36:31)+'px "Noto Sans TC",sans-serif';
+  ctx.fillText("分 ╱ 100", cx, cyc+(big?136:108));
 
-  // 名字 + 稱號大標 + 稀有度（midA 淡入）
+  // 名字 → 稱號 → 稀有度（拉開間距、用滿空間）
   ctx.save(); ctx.globalAlpha=midA;
-  const namesY=cyc+R+(big?92:76);
+  const namesY=cyc+R+(big?108:86);
   ctx.fillStyle=soft; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
   ctx.fillText(clip(nameA,6)+"　✕　"+clip(nameB,6), cx, namesY);
-  const titleY=namesY+(big?106:84);
-  ctx.fillStyle=ink; ctx.font='700 '+(big?104:86)+'px "Noto Serif TC",serif';
+  const titleY=namesY+(big?150:118);
+  ctx.fillStyle=ink; ctx.font='700 '+(big?108:90)+'px "Noto Serif TC",serif';
   ctx.fillText(ct.emo+" "+ct.name, cx, titleY);
-  const rareY=titleY+(big?62:50);
-  ctx.fillStyle=acc; ctx.font='600 '+(big?30:27)+'px "Noto Sans TC",sans-serif';
+  const rareY=titleY+(big?86:66);
+  ctx.fillStyle=acc; ctx.font='600 '+(big?31:28)+'px "Noto Sans TC",sans-serif';
   ctx.fillText((rare.p<5?"✦ ":"")+rare.tier+" ・ 約每 "+rare.oneIn+" 個家庭 1 位", cx, rareY);
   ctx.restore();
 
   // 分隔線（細＋中央小點）
-  const divY=rareY+(big?56:46);
+  const divY=rareY+(big?78:60);
   ctx.strokeStyle="#d8cdb8"; ctx.lineWidth=2;
   ctx.beginPath(); ctx.moveTo(cx-(big?160:128),divY); ctx.lineTo(cx-24,divY); ctx.moveTo(cx+24,divY); ctx.lineTo(cx+(big?160:128),divY); ctx.stroke();
   ctx.fillStyle=acc; ctx.beginPath(); ctx.arc(cx,divY,5,0,7); ctx.fill();
 
-  // 金句（襯線・無膠囊）
+  // 金句（依八字最有感的一句・襯線・最多 2 行）
   ctx.save(); ctx.globalAlpha=quoteA;
-  const quoteF=big?52:44, lh=big?80:68;
+  const quoteF=big?54:46, lh=big?84:72;
   ctx.font='500 '+quoteF+'px "Noto Serif TC",serif';
-  const lines=wrapSmart(ctx, shareHook(r), W-(big?260:200), 3);
-  const qTop=divY+(big?98:80);
+  const lines=wrapSmart(ctx, shareHook(r), W-(big?250:200), 2);
+  const qC=divY+(big?190:82);
+  const qTop=qC-(lines.length-1)*lh/2;
   ctx.fillStyle=ink; lines.forEach((ln,i)=>ctx.fillText(ln, cx, qTop+i*lh));
   ctx.restore();
 
   // 底部 CTA + 回流入口
   ctx.save(); ctx.globalAlpha=ctaA;
-  const discY=H-(big?86:60), igY=discY-(big?58:48), ctaY=igY-(big?56:46);
+  const discY=H-(big?92:66), igY=discY-(big?60:50), ctaY=igY-(big?58:48);
   ctx.strokeStyle="#dcd2bf"; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(cx-(big?270:215),ctaY-(big?54:46)); ctx.lineTo(cx+(big?270:215),ctaY-(big?54:46)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-(big?270:215),ctaY-(big?56:48)); ctx.lineTo(cx+(big?270:215),ctaY-(big?56:48)); ctx.stroke();
   ctx.fillStyle=soft; ctx.font='500 '+(big?29:26)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("標另一半一起測・看你們各是哪一型", cx, ctaY);
   ctx.fillStyle=acc; ctx.font='700 '+(big?31:27)+'px "Noto Sans TC",sans-serif';

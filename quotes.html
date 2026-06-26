@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<!-- 財富煉金術品牌 favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><circle cx='64' cy='64' r='63' fill='%230f172a'/><polygon points='64,20 96,68 79,68 79,106 49,106 49,68 32,68' fill='%23F4C430'/></svg>">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>金句對照表・父母子女八字工具</title>
+<style>
+  :root{ --ink:#3a3128; --soft:#8c7f6a; --gold:#b5873a; --line:#e3d8c4; --cream:#f7f1e4; }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#faf5ea,#efe6d4);color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC",sans-serif;line-height:1.7;padding:28px 16px 60px}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-family:"Noto Serif TC",serif;font-size:27px;margin:0 0 4px;letter-spacing:1px}
+  .sub{color:var(--soft);font-size:14px;margin:0 0 22px}
+  .legend{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:22px;font-size:13.5px}
+  .legend b{color:var(--gold)}
+  .legend .row{margin:5px 0}
+  .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;margin-right:4px}
+  .stat{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0}
+  .stat .b{background:#f3ead6;border-radius:10px;padding:8px 14px;font-size:13px}
+  .stat .b b{font-size:18px;color:var(--gold);font-family:"Noto Serif TC",serif}
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px;
+    box-shadow:0 4px 14px rgba(120,90,50,.06)}
+  .head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .emo{font-size:30px;line-height:1}
+  .name{font-family:"Noto Serif TC",serif;font-size:22px;font-weight:700}
+  .rare{font-size:12.5px;font-weight:700;padding:3px 11px;border-radius:999px;background:#f3ead6;color:#8a6a16}
+  .rare.r0{background:#f6e3df;color:#b03a28} .rare.r1{background:#efe1f0;color:#7a4f8a}
+  .why{font-size:13px;color:var(--soft);margin:7px 0 2px}
+  .why b{color:var(--ink)}
+  .desc{font-size:13.5px;color:#6a5c46;margin:0 0 12px;font-style:italic}
+  .quotes{list-style:none;margin:0;padding:0;counter-reset:q}
+  .quotes li{counter-increment:q;font-family:"Noto Serif TC",serif;font-size:16px;padding:9px 12px 9px 44px;position:relative;
+    border-top:1px dashed var(--line)}
+  .quotes li:first-child{font-weight:700}
+  .quotes li::before{content:counter(q);position:absolute;left:12px;top:9px;width:24px;height:24px;border-radius:50%;
+    background:#efe6d4;color:var(--gold);font-family:sans-serif;font-size:12px;font-weight:700;text-align:center;line-height:24px}
+  .quotes li:first-child::after{content:"預設・最有感";position:absolute;right:12px;top:11px;font-family:sans-serif;
+    font-size:11px;color:#fff;background:var(--gold);padding:2px 9px;border-radius:999px}
+  .sctalk{margin-top:30px;border-top:2px solid var(--line);padding-top:18px}
+  .scbar{display:flex;border-radius:12px;overflow:hidden;margin:10px 0;font-size:13px;font-weight:700;color:#fff;text-align:center}
+  .scbar div{padding:10px 6px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  td,th{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  th{background:#f3ead6}
+  .foot{color:var(--soft);font-size:12px;margin-top:26px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>金句・稱號・稀有度 全組合對照表</h1>
+  <p class="sub">父母子女・八字合不合工具 ｜ 內部審稿用 ｜ 金句皆策展、非隨機</p>
+
+  <div class="legend">
+    <div class="row">🧭 <b>金句怎麼來</b>：依兩人八字算出的「<b>稱號</b>」決定——稱號鎖定你們命裡最核心的緣分訊號（六合／調候／用神互補／官殺／相沖／生剋…），每型 3 句都切題，<b>第一句＝最有感（預設顯示）</b>，按「換一句」在同型 3 句間輪播。</div>
+    <div class="row">🏷️ <b>稱號怎麼定</b>：依命理優先序由上往下判，命中哪條就是哪型（下表即判定順序）。</div>
+    <div class="row">🔢 <b>分數是另一條刻度</b>：與金句獨立。色圈顏色：<span class="chip" style="background:#c8452f">≥93 朱紅</span><span class="chip" style="background:#d8922a">≥86 琥珀</span><span class="chip" style="background:#3f76a3">≥81 黛藍</span><span class="chip" style="background:#8a6aa0">&lt;81 紫藤</span></div>
+    <div class="stat" id="stat"></div>
+  </div>
+
+  <div id="cards"></div>
+
+  <div class="sctalk">
+    <h1 style="font-size:20px">補充：分數刻度與色圈</h1>
+    <p class="sub">分數採古法「上中下等婚」高分刻度（地板 78、中位數 85），讓人人有面子；差異化交給稱號。</p>
+    <div class="scbar">
+      <div style="background:#8a6aa0;flex:3">78–80 紫藤・溫潤</div>
+      <div style="background:#3f76a3;flex:5">81–85 黛藍・順暢</div>
+      <div style="background:#d8922a;flex:7">86–92 琥珀・很好</div>
+      <div style="background:#c8452f;flex:8">93–100 朱紅・極佳</div>
+    </div>
+    <p class="sub">分享圖卡的大色圈會依分數落點換色，金句則依稱號——兩者組合出每張卡的獨特感。</p>
+  </div>
+
+  <p class="foot">財富煉金術 ・ 向光而行 ｜ 金句總數 = 12 型 × 3 句 = 36 句</p>
+</div>
+
+<script>
+const TITLE_FREQ={恩星守護型:31,並肩戰友型:13,互補神隊友型:17,冷暖相濟型:11,同款靈魂型:6,互為恩星型:4.5,細水長流型:4,默契神隊友型:3.5,越吵越親型:3.3,小棉襖型:2.8,活水源頭型:2.7,彼此貴人型:1.6};
+// 判定優先序（同 coupleTitle 由上往下）
+const TYPES=[
+  {emo:"🌟",name:"互為恩星型",why:"雙方日主<b>互為對方的喜用神</b>（命理最高等的互旺）",desc:"在命理喜用上彼此成全——難得的天作之合"},
+  {emo:"🛡️",name:"恩星守護型",why:"一方的日主，<b>正是對方命裡最需要的五行</b>",desc:"一方正好補上另一方命裡最需要的那塊"},
+  {emo:"💞",name:"默契神隊友型",why:"兩人<b>日支六合</b>（地支相吸）",desc:"日支六合、天生對頻，一個眼神就懂"},
+  {emo:"🔥",name:"冷暖相濟型",why:"<b>調候互補</b>——一方補上對方命局的寒或暖",desc:"你剛好是他命裡需要的那份溫度"},
+  {emo:"⚔️",name:"並肩戰友型",why:"十神成<b>官殺基調</b>／子剋父（剛健相磨）",desc:"棋逢對手、針鋒相對，卻最挺彼此"},
+  {emo:"🧲",name:"越吵越親型",why:"兩人<b>日支相沖</b>（動中藏情）",desc:"像磁鐵般互彈，但和好後感情更深"},
+  {emo:"🧩",name:"互補神隊友型",why:"<b>五行強弱正好彼此補位</b>",desc:"你缺的他剛好有，天生互相補位"},
+  {emo:"💧",name:"活水源頭型",why:"你的<b>日主生孩子的日主</b>（印生）",desc:"你是他天生的養分，給得自然"},
+  {emo:"🧸",name:"小棉襖型",why:"孩子的<b>日主回生你</b>（食傷反哺）",desc:"這孩子是來疼你的，貼心又暖"},
+  {emo:"🪞",name:"同款靈魂型",why:"兩人<b>日主同氣</b>（同一種五行）",desc:"同一種材質，最懂彼此也最像"},
+  {emo:"🍀",name:"彼此貴人型",why:"<b>日支互帶天乙貴人</b>",desc:"命裡互帶貴氣，是彼此的福星"},
+  {emo:"🌱",name:"細水長流型",why:"無特強合沖（<b>靠日久生情</b>）",desc:"不轟轟烈烈，靠日子慢慢養出來的緣"}
+];
+const TITLE_QUOTE={
+  互為恩星型:["命理說，我們是彼此命裡那塊缺角 🧩 剛好補上對方","八字認證的天作之合 🌟 我們是來成全彼此的","他旺我、我也旺他——這種緣，一輩子難得 ✨"],
+  恩星守護型:["命理說我剛好是孩子命裡最需要的那塊 🛡️","八字蓋章：我是來守護他的那個人 💛","他命裡缺的，剛好我有——這就是緣分 🍀"],
+  默契神隊友型:["八字說我們日支六合 💞 一個眼神就懂","天生對頻的我們 🎯 不用多說也默契","命理認證的神隊友 🤝 我們是同一國的"],
+  冷暖相濟型:["命理說我剛好是孩子命裡需要的溫度 🔥 暖哭","他命裡偏冷，我正好帶來暖——天生互暖 ☀️","八字說我們冷暖剛好相濟 🍵 在一起最舒服"],
+  並肩戰友型:["我們像兩個將軍 ⚔️ 會對撞、卻最挺彼此","越頂嘴越像我——他不是叛逆，是想被當大人 😮‍💨","命理說我們是並肩的戰友 🛡️ 吵歸吵，背靠背"],
+  越吵越親型:["我們像兩塊互彈的磁鐵 🧲 沖得兇、和好更深","八字說我們越吵越親 ❤️‍🔥 吵完又超黏","命裡天生對沖——但和好那一刻，最暖 🤍"],
+  互補神隊友型:["我們五行剛好互補 🧩 我缺的他剛好有","八字說我們是互補的一對 ⚖️ 湊在一起才完整","他補我、我補他——天生的好搭檔 🤝"],
+  活水源頭型:["八字說我是孩子的活水源頭 💧 給得自然又心甘","我對他幾乎有求必應 😅 學放手是我的功課","命理說我是來滋養他的——當後盾最甘願 🌱"],
+  小棉襖型:["八字說這孩子是來疼我的小棉襖 🧸 戀家又貼心","命理認證：他是來暖我的 🥹 一個眼神就心軟","這孩子天生黏我、暖我——上輩子的情人吧 💛"],
+  同款靈魂型:["八字說我跟孩子是同款靈魂 🪞 最懂也最像","同一種硬脾氣 😆 最懂彼此、也最會吵","命理認證的同款人——他就是另一個我 ✨"],
+  彼此貴人型:["天啊我們命裡互為貴人 ✨ 這輩子真的賺到","八字說我們是彼此的福星 🍀 互相旺一輩子","命理認證：遇到彼此，就是來旺對方的 🫶"],
+  細水長流型:["我們的緣分，是日子慢慢養出來的 🌱","不轟轟烈烈，但越往後越懂、越久越深 🍵","八字說我們細水長流——平淡，卻最扎實 🤍"]
+};
+function rarity(name){ const p=TITLE_FREQ[name]||5, oneIn=Math.max(2,Math.round(100/p));
+  const tier=p<2?"極稀有":(p<5?"稀有":(p<12?"少見":"經典")); const cls=p<2?"r0":(p<5?"r1":""); return {p,oneIn,tier,cls}; }
+
+document.getElementById("stat").innerHTML=
+  "<div class='b'><b>12</b> 種稱號</div><div class='b'><b>36</b> 句金句</div><div class='b'>最稀有 <b>彼此貴人型</b> 1.6%</div><div class='b'>最常見 <b>恩星守護型</b> 31%</div>";
+
+document.getElementById("cards").innerHTML=TYPES.map((t,i)=>{
+  const ra=rarity(t.name);
+  const qs=(TITLE_QUOTE[t.name]||[]).map(q=>"<li>"+q+"</li>").join("");
+  return "<div class='card'><div class='head'><span class='emo'>"+t.emo+"</span>"
+    +"<span class='name'>"+t.name+"</span>"
+    +"<span class='rare "+ra.cls+"'>"+ra.tier+" ・ "+ra.p+"% ・ 約每 "+ra.oneIn+" 個家庭 1 位</span>"
+    +"<span style='color:#b5873a;font-size:12px;margin-left:auto'>判定序 #"+(i+1)+"</span></div>"
+    +"<div class='why'>命理依據："+t.why+"</div>"
+    +"<div class='desc'>"+t.desc+"</div>"
+    +"<ul class='quotes'>"+qs+"</ul></div>";
+}).join("");
+</script>
+</body>
+</html>
