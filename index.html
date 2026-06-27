@@ -466,7 +466,7 @@
         <details class="binfo"><summary>🔗 <b>十神</b>：定出這段親子緣分的本質</summary>
           <div>以「大人的日主」為中心，看「孩子的日主」是來<b>生我、我生、剋我、我剋，還是同我</b>，就得出一個「十神」：<br>・生我者＝<b>印</b>（孩子像來疼你、庇蔭你）<br>・我生者＝<b>食神／傷官</b>（子女星，你樂於付出）<br>・我剋者＝<b>正財／偏財</b>（你想守護、掌控）<br>・剋我者＝<b>正官／七殺</b>（孩子讓你成長、也最有張力）<br>・同我者＝<b>比肩／劫財</b>（像哥兒們，最懂也最會爭）。這就是你們關係的「天生劇本」。</div></details>
         <details class="binfo"><summary>📈 <b>月令旺衰</b>：看生月定先天強弱</summary>
-          <div>「月令」就是出生那個<b>節氣月</b>，是全局最有力的位置。把日主五行對上當月當令的五行，分成<b>旺・相・休・囚・死</b>五級：同當令＝旺（最飽滿）、被當令生＝相、生當令＝休、剋當令＝囚、被當令剋＝死（最弱）。<br>能量弱不是不好，而是<b>更需要被肯定、被托住</b>。這是子平論命判斷強弱的根。</div></details>
+          <div>「月令」就是出生那個<b>節氣月</b>，是全局最有力的位置——但<b>不是唯一</b>。本工具會把月令（得時）<b>再加上全局五行的根與幫扶（得地、得勢，含地支藏干）</b>綜合判定，分成<b>行動派／穩定型／內斂型</b>三級，比只看月令準。<br>這只是<b>性格傾向、不是好壞</b>：內斂型心思細、靠韌性使力，行動派敢衝、有主見，穩定型適應力好。</div></details>
         <details class="binfo"><summary>🔥 <b>調候喜用</b>（窮通寶鑑）：誰補了誰命裡的冷暖</summary>
           <div>《窮通寶鑑》講「<b>調候</b>」——命局有寒暖燥濕之分。生在<b>寒冬</b>（亥子丑月）命偏冷，最需要「火」來暖；生在<b>盛夏</b>（巳午未月）命偏燥，最需要「水」來潤。<br>如果一方的日主，剛好是另一方命裡最需要的那一味，就是「<b>調候得用</b>」——你正好是他命中需要的那把火、那場雨，是很深的緣。</div></details>
         <details class="binfo"><summary>⚖️ <b>刑沖合害會</b>：看相處的順與卡</summary>
@@ -747,14 +747,17 @@ function tiaohou(monthZhi){
 
 /* ========== 子平・身強身弱 → 喜用神 ========== */
 /* 身強弱：以「月令旺衰（得令，權重最大）＋ 帮身五行占比（得地得勢）」綜合判定 */
-function bodyStrong(p,dmE){
-  // 月令為主（得時，權重最大）＋ 帮身占比（得地得勢）為輔
+/* 全局身強弱分數：月令旺衰（得時）＋ 帮身（比劫＋印，含藏干）占比（得地得勢） */
+function bodyScore(p,dmE){
   const wsScore={旺:2,相:1,休:0,囚:-1,死:-2}[wangShuai(dmE,p.month.zhi)]||0;
   const s=elementStrength(p), total=ELEMS.reduce((a,x)=>a+s[x],0)||1;
   let yin=null; ELEMS.forEach(x=>{ if(SHENG[x]===dmE) yin=x; });   // 生我者＝印
   const helpRatio=(s[dmE]+s[yin])/total;                            // 比劫＋印 占比
-  return (wsScore*2.4 + (helpRatio-0.42)*4) > 0;                     // 月令主導；>0 偏身強
+  return wsScore*2.4 + (helpRatio-0.42)*4;                           // 月令主導
 }
+function bodyStrong(p,dmE){ return bodyScore(p,dmE) > 0; }
+/* 三級先天強弱（給敘事用，中和最常見）：避免一律判「最弱」 */
+function strengthLevel(p,dmE){ const v=bodyScore(p,dmE); return v>=1.6?"強":(v<=-1.6?"弱":"中和"); }
 /* 扶抑用神（取單一主用神／主忌神，命中才算數）：身強喜洩剋耗、身弱喜生扶。
    並補例外：印多身強取財破印、身弱印不現取比劫幫身。 */
 function favorSet(p,dmE){
@@ -901,6 +904,8 @@ function compat(pA,pB){
   // 維度 G：月令旺衰（旺相休囚死）——描述命局先天能量，不直接計分
   const mzA=pA.month.zhi, mzB=pB.month.zhi;
   const wsA=wangShuai(eA,mzA), wsB=wangShuai(eB,mzB);
+  // 全局三級強弱（得令＋得地＋得勢，含藏干）——敘事改用這個，較準、不一律判「最弱」
+  const strA=strengthLevel(pA,eA), strB=strengthLevel(pB,eB);
 
   // 維度 H：調候互補（窮通寶鑑）——一方正好補上另一方命局的寒暖
   const thA=tiaohou(mzA), thB=tiaohou(mzB);
@@ -945,7 +950,7 @@ function compat(pA,pB){
 
   return {score,hits,relA,eA,eB,sA,sB,complement,dmA,dmB,shishenAB,yong,
     dzA,dzB,liuhe:!!LIUHE[dk],liuchong:(LIUCHONG[dzA]===dzB),dizhiState:dizhiState(dzA,dzB),
-    mzA,mzB,wsA,wsB,thA,thB,tiaohouHit,guiren,officerHeavy:(officer>=3),study,
+    mzA,mzB,wsA,wsB,strA,strB,thA,thB,tiaohouHit,guiren,officerHeavy:(officer>=3),study,
     zodiacA:ZHI_ZODIAC[yzA],zodiacB:ZHI_ZODIAC[yzB],zodiacRel};
 }
 
@@ -1106,20 +1111,31 @@ function buildReading(r,nameA,nameB){
       +"<p style='margin:8px 0 0'>"+ss.body+"</p></div>";
   }
 
-  // 月令旺衰（先天能量）——子平法看強弱，先看生月
-  const wsSay={旺:"能量最飽滿、底氣足，是天生的主角型",相:"得月令幫襯、順順的，做事容易有人扶",
-    休:"溫和內斂、懂得退讓，不愛搶鋒頭",囚:"先天有點壓抑、需要被支持與鼓勵",死:"先天能量最弱、最需要被疼、被托住"};
-  // 白話標籤（避免「囚／死」術語直接嚇到家長；術語留在命理依據區）
-  const wsLab={旺:"能量很旺",相:"得令、順",休:"溫和內斂",囚:"先天偏弱",死:"先天最需要被托住"};
-  if(r.wsA&&r.wsB){
-    const moN=(cal,zhi)=>"國曆 "+cal+" 月"+(zhi?"（八字節氣為「"+zhi+"」月，當令屬"+ZHI_SEASON[zhi]+"）":"");
-    html+="<h3><span class='bar'></span>從生月看，他們先天的底氣</h3>";
-    html+="<p>命理看一個人的強弱，先看「生在哪個月」——這叫<span class='hl'>月令旺衰</span>，是子平八字的根。<br>"
-      +"<small style='color:var(--faint)'>（八字用「節氣月」，名稱跟國曆月不同：例如國曆 10 月多落在「戌」月、7 月落在「未」月，都是正常的。）</small><br>"
-      +nameA+"生在<b>"+moN(r.monA,r.mzA)+"</b>，日主"+r.dmA+"<b>"+wsLab[r.wsA]+"</b>——"+wsSay[r.wsA]+"。<br>"
-      +nameB+"生在<b>"+moN(r.monB,r.mzB)+"</b>，日主"+r.dmB+"<b>"+wsLab[r.wsB]+"</b>——"+wsSay[r.wsB]+"。</p>";
-    if(r.wsB==="囚"||r.wsB==="死") html+="<p><span class='hl'>孩子先天能量比較弱，不是不好，是更需要你穩穩托住他</span>——你的肯定，對他來說就是最補的那帖藥。</p>";
-    else if(r.wsB==="旺") html+="<p>孩子先天能量旺、很有主見——<span class='hl'>與其壓他，不如給他方向</span>，他會跑得比你想像的更遠。</p>";
+  // 先天個性底氣（全局三級強弱：強／中和／弱）——中性風格，非好壞、非「最弱」
+  const strLab={強:"行動派",中和:"穩定型",弱:"內斂型"};
+  const strSay={強:"想法多、敢衝、有主見，是會自己往前跑的那種",
+    中和:"五行勻稱、個性穩、適應力好，能屈能伸、不太有大起伏",
+    弱:"心思細、感受深、外柔內韌，靠耐性與韌性慢慢使力（不是弱，是另一種強）"};
+  const sameNote={強:"你們先天都是<b>行動派</b>——很合拍，但也容易硬碰硬；給彼此一點空間，別都想當主導。",
+    中和:"你們先天都是<b>穩定型</b>——相處省力、不太起風浪，這份平穩其實最難得。",
+    弱:"你們先天都是<b>細膩內斂型</b>——最懂彼此的感受，但也容易一起鑽牛角尖；偶爾要有一個人先跳出來、輕鬆看。"};
+  if(r.strA&&r.strB){
+    const moN=(cal,zhi)=>"生在國曆 "+cal+" 月"+(zhi?"、節氣月「"+zhi+"」":"");
+    html+="<h3><span class='bar'></span>從生月看，他們先天的個性底氣</h3>";
+    html+="<p>子平會綜合「生月＋全局五行」判先天的能量傾向——這只是<span class='hl'>性格傾向，不是好壞</span>。<br>"
+      +"<small style='color:var(--faint)'>（八字用節氣月，名稱跟國曆月不同，例如國曆 10 月多落在「戌」月、7 月落在「未」月，都正常。）</small></p>";
+    if(r.strA===r.strB){
+      // 同級：合併成一句，不重複兩句一樣的機械話
+      html+="<p>"+nameA+"（"+moN(r.monA,r.mzA)+"）和"+nameB+"（"+moN(r.monB,r.mzB)+"）<b>先天都偏「"+strLab[r.strA]+"」</b>——"+strSay[r.strA]+"。<br>"+sameNote[r.strA]+"</p>";
+    } else {
+      html+="<p>"+nameA+"（"+moN(r.monA,r.mzA)+"）先天偏<b>「"+strLab[r.strA]+"」</b>——"+strSay[r.strA]+"；<br>"
+        +nameB+"（"+moN(r.monB,r.mzB)+"）先天偏<b>「"+strLab[r.strB]+"」</b>——"+strSay[r.strB]+"。<br>"
+        +"一個<b>"+strLab[r.strA]+"</b>、一個<b>"+strLab[r.strB]+"</b>——剛好一動一靜、一張一弛，<span class='hl'>是天生互補的組合</span>，懂得欣賞對方跟自己不一樣，會越處越順。</p>";
+    }
+    // 怎麼陪孩子（依孩子先天傾向）
+    if(r.strB==="弱") html+="<p><span class='hl'>孩子是細膩內斂型，特別吃「被肯定」</span>——少一點『你應該』，多一點『你已經很棒』，他的力量會從你的相信裡長出來。</p>";
+    else if(r.strB==="強") html+="<p>孩子是行動派、主見強——<span class='hl'>與其壓他，不如給他方向</span>，他會跑得比你想像的更遠。</p>";
+    else html+="<p>孩子個性穩、適應力好——<span class='hl'>順著他的節奏陪</span>，不用硬推也不用擔心，他自己會找到路。</p>";
   }
 
   // 孩子的「學習風格」——只說正面、依命局實際強項給「怎麼陪」，絕不下「會不會讀書」的可證偽斷言
@@ -1269,8 +1285,8 @@ function adviceThird(r){
   // 優先給「最該採取行動」的提醒，其次才是「值得珍惜」的好緣
   if(r.liuchong) return ["沖，不是壞事，是要你更用心","你們日支六沖，相處像兩塊磁鐵互彈。別想『改造』對方，改成『理解差異』——每天留十分鐘，只聽他說、不糾正。沖得越兇的親子，和好後感情越深。"];
   if(r.relA==="子剋父"||r.officerHeavy) return ["他的頂撞，是想被你看見","他背著比較重的脾氣與壓力，越壓越倔。把焦點從『糾正行為』移到『接住情緒』：先說『我知道你很氣』，他軟了，話才聽得進去。"];
-  if(r.wsB==="囚"||r.wsB==="死") return ["多托住他，少要求他","孩子先天能量較弱，特別需要被肯定。少一點『你應該』，多一點『你已經很棒』——你的相信，是他長出力量的根。"];
-  if(r.wsB==="旺") return ["給方向，不要給壓制","孩子先天能量旺、主見強。與其壓他，不如陪他把那股勁用對地方——給目標、給挑戰，他會跑得比你想像的更遠。"];
+  if(r.strB==="弱") return ["多托住他，少要求他","孩子先天偏內斂型、感受深，特別需要被肯定。少一點『你應該』，多一點『你已經很棒』——你的相信，是他長出力量的根。"];
+  if(r.strB==="強") return ["給方向，不要給壓制","孩子先天偏行動派、主見強。與其壓他，不如陪他把那股勁用對地方——給目標、給挑戰，他會跑得比你想像的更遠。"];
   if(r.relA==="父生子") return ["給得多，更要學會放手","你對他幾乎有求必應，但翅膀要他自己練。挑一件他能自己決定的小事（穿搭、社團）完全交給他，忍住不插手——放手，是更深的信任。"];
   if(r.complement) return ["你們是彼此的補位，善用它","你們五行剛好互補，天生能補對方的不足。他卡住的地方，常常正是你的強項——別嫌他，伸手拉他一把，這就是緣分的用處。"];
   if(r.tiaohouHit) return ["你就是他的調候，別吝嗇你的溫度","命理上你正好補了孩子命局的寒暖。多給他你最擅長的那一面——你的擁抱、你的穩定，對他來說就是最補的能量。"];
