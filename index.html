@@ -1078,6 +1078,16 @@ function nameOf(role,nick,who){
   if(who==="A") return role==="父"?"爸爸":"媽媽";
   return role==="男"?"這個男孩":"這個女孩";
 }
+/* 「你們是什麼樣的人」段落標題——依五行生剋實際關係客製，不寫死同一句 */
+function matHead(r){
+  switch(r.relA){
+    case "父生子": return "你，是他天生的活水源頭";
+    case "子生父": return "這孩子，是來疼你的";
+    case "父剋子": return "你想替他，擋掉所有風雨";
+    case "子剋父": return "會頂撞你的，往往最像你";
+    default:       return "你們，是同一種材質";   // 同氣（日主同五行）
+  }
+}
 function relSentence(r){
   switch(r.relA){
     case "父生子": return "你天生就是孩子的「活水源頭」——"+E_TRAIT[r.eA].n+"生"+E_TRAIT[r.eB].n+"，你給得很自然，他也接得很順。這種組合，孩子從小就特別黏你、信你。你要做的不是給更多，是學會<span class='hl'>適時放手，讓他自己長</span>。";
@@ -1098,7 +1108,7 @@ function buildReading(r,nameA,nameB){
   else hi=nameA+"和"+nameB+"，你們屬於慢慢加溫的一型——一開始或許需要多一點耐心，但這種緣，往往是越往後越懂、越久越深。";
   html+="<p style='background:#f8f1e4;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-weight:600;color:#5b3a52'>"+hi+"</p>";
   // 一、你們是什麼樣的人
-  html+="<h3><span class='bar'></span>你們，是"+(r.eA===r.eB?"同一種材質":"兩種不一樣的材質")+"</h3>";
+  html+="<h3><span class='bar'></span>"+matHead(r)+"</h3>";
   html+="<p>"+nameA+"，日主<b>"+r.dmA+"</b>，是<span class='hl'>"+ta.img+"</span>（五行屬"+r.eA+"）——"+ta.t+"</p>";
   html+="<p>"+nameB+"，日主<b>"+r.dmB+"</b>，是<span class='hl'>"+tb.img+"</span>（五行屬"+r.eB+"）——"+tb.t+"</p>";
   html+="<p>"+relSentence(r)+"</p>";
@@ -1215,7 +1225,7 @@ function buildReadingTeaser(r,nameA,nameB){
   else if(r.score>=81) hi=nameA+"和"+nameB+"，這是一段穩穩的緣分，只要願意多懂他一點，會越來越好。";
   else hi=nameA+"和"+nameB+"，你們屬於慢慢加溫的一型——越往後越懂，越久越深。";
   html+="<p style='background:#f8f1e4;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-weight:600;color:#5b3a52'>"+hi+"</p>";
-  html+="<h3><span class='bar'></span>你們，是"+(r.eA===r.eB?"同一種材質":"兩種不一樣的材質")+"</h3>";
+  html+="<h3><span class='bar'></span>"+matHead(r)+"</h3>";
   html+="<p>"+nameA+"，日主<b>"+r.dmA+"</b>，是<span class='hl'>"+ta.img+"</span>（五行屬"+r.eA+"）——"+ta.t+"</p>";
   html+="<p>"+nameB+"，日主<b>"+r.dmB+"</b>，是<span class='hl'>"+tb.img+"</span>（五行屬"+r.eB+"）——"+tb.t+"</p>";
   const ss=SHISHEN_PC[r.shishenAB];
