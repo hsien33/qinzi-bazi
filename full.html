@@ -6,7 +6,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><circle cx='64' cy='64' r='63' fill='%230f172a'/><polygon points='64,20 96,68 79,68 79,106 49,106 49,68 32,68' fill='%23F4C430'/></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>父母子女・八字合不合｜親子緣分解讀（傳統文化・參考娛樂）</title>
-<meta name="description" content="輸入爸媽與孩子的生日時辰，用傳統八字看親子緣分，給你一份溫暖、好懂、能照做的相處之道。八字屬傳統文化、非科學，聽個參考、博君一笑。">
+<meta name="description" content="輸入爸媽與孩子的生日時辰，用傳統八字看親子緣分，給你一份溫暖、好懂、能照做的相處之道。八字屬傳統文化、非科學，聽個參考就好。">
 <meta property="og:title" content="父母子女・八字合不合｜親子緣分解讀">
 <meta property="og:description" content="不是算你們合不合，是幫你看懂怎麼相處最舒服。一份溫暖、好懂、能照做的親子緣分解讀。">
 <meta property="og:type" content="website">
@@ -365,9 +365,7 @@
 
   <!-- ===== 免責 ===== -->
   <div class="disc sans">
-    <b>先說在前面：</b>八字是老祖宗的傳統文化、<b>不是科學</b>，<b>聽個參考、博君一笑</b>就好——真正決定親子關係的，是你願不願意多懂他一點。
-    <a href="#" id="discMore" style="color:var(--gold-d);text-decoration:underline">詳情</a>
-    <span id="discFull" style="display:none"><br>本工具不作任何教養、健康、法律或重大決定的依據。</span>
+    <b>先說在前面：</b>八字是老祖宗的傳統文化、<b>不是科學</b>，<b>聽個參考</b>就好——真正決定親子關係的，是你願不願意多懂他一點。
   </div>
 
   <!-- ===== 開場白（精簡） ===== -->
@@ -1414,8 +1412,6 @@ document.addEventListener("click",function(e){
     try{ localStorage.removeItem("bz_form"); }catch(err){}
     FORM_IDS.forEach(id=>{ if($(id)) $(id).value=""; });
     alert("已清除這台裝置上暫存的生日資料。"); }
-  if(e.target&&e.target.id==="discMore"){ e.preventDefault();
-    const f=$("discFull"); if(f) f.style.display=f.style.display==="none"?"inline":"none"; e.target.style.display="none"; }
 });
 
 function readPerson(prefix){
