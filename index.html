@@ -558,7 +558,7 @@
       八字命理屬傳統文化，非科學，本工具結果僅供參考娛樂，不作任何教養、醫療、法律或重大決策依據。<br>
       🔒 <b>你的隱私：</b>輸入的生日只暫存在你自己的裝置（瀏覽器），<b>不會上傳、我們也收不到</b>。共用裝置可按
       <a href="#" id="clearBtn" style="color:var(--gold-l);text-decoration:underline">清除我的資料</a> 清空。<br>
-      © 財富煉金術 Wealth Alchemy ・ 親子緣分解讀工具
+      © 財富煉金術 Wealth Alchemy ・ <a id="qlink" href="q-audit-8x3k.html" style="color:inherit;text-decoration:none;cursor:inherit">親子緣分解讀工具</a>
     </div>
   </footer>
 </div>
@@ -1829,6 +1829,8 @@ $("reHookBtn").addEventListener("click",()=>{
   state.hookIdx=(state.hookIdx||0)+1; redrawShare();
   $("shareHint").textContent="換了一句～喜歡就存圖分享，或再按一次換一句 🎲";
 });
+// 金句對照表隱形入口：只有完整版才是連結（導流版退回純文字）
+if(!FULL){ const q=$("qlink"); if(q){ q.removeAttribute("href"); } }
 </script>
 </body>
 </html>
