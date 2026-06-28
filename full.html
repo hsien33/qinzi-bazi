@@ -1460,7 +1460,7 @@ function runCompat(){
     setTimeout(()=>{ clearInterval(iv); el.innerHTML=target+"<small>分</small>"; },800);
   })(r.score);
   const ct=coupleTitle(r);
-  $("r_title").textContent=ct.emo+" "+ct.name;
+  $("r_title").innerHTML=iconSVG(r.shishenAB,22,"#4a2d18")+" "+ct.name;
   const rare=rarityOf(r);
   const star=rare.p<2?"<span class='star'>✦</span> ":"";
   $("r_rare").innerHTML=star+"40 型中的「"+ct.name+"」・"+rare.tier+"（約每 "+rare.oneIn+" 個家庭 1 位）";
@@ -1554,6 +1554,42 @@ function shareCaption(r,nameA,nameB){
     +"by IG @jeff.walk2light\n"
     +"#八字合不合 #親子緣分 #親子教養 #療癒系 #媽媽日常 #財富煉金術");
 }
+/* ===== 十神專屬線條圖示（取代 emoji）：一份 ops 定義，同時畫到 canvas 與 DOM SVG =====
+   op：["c",cx,cy,r]圈線／["cd",cx,cy,r]實心紅點／["l",x1,y1,x2,y2]直線／["p","d",fill]路徑 */
+const ICON_OPS={
+  比肩:[["c",25,24,5],["l",25,30,25,43],["c",39,24,5],["l",39,30,39,43],["l",20,47,29,47],["l",35,47,44,47]],
+  劫財:[["c",27,32,9],["c",38,32,9]],
+  食神:[["l",18,34,46,34],["p","M21 34 a11 11 0 0 0 22 0",0],["p","M27 16 c-4 4 -4 6 0 11",0],["p","M37 16 c-4 4 -4 6 0 11",0]],
+  傷官:[["p","M32 14 C33.4 26 38 30.6 50 32 C38 33.4 33.4 38 32 50 C30.6 38 26 33.4 14 32 C26 30.6 30.6 26 32 14 Z",1]],
+  正財:[["p","M22 26 H42 L32 43 Z",1],["p","M22 26 L32 32 L42 26",0],["p","M15 40 q17 12 34 0",0]],
+  偏財:[["c",32,23,6],["c",24,33,6],["c",40,33,6],["l",32,39,32,48]],
+  正官:[["l",16,26,48,26],["l",32,21,32,44],["l",26,44,38,44],["p","M12 26 a4 4 0 0 0 8 0",0],["p","M44 26 a4 4 0 0 0 8 0",0]],
+  七殺:[["l",21,44,41,23],["l",43,44,23,23],["c",21,44,2.6],["c",43,44,2.6],["l",36,21,42,26],["l",28,21,22,26]],
+  正印:[["p","M16 33 a16 14 0 0 1 32 0 Z",1],["p","M32 33 v10 a4 4 0 0 0 7.5 1.8",0]],
+  偏印:[["p","M43 16 a17 17 0 1 0 0 32 a13 13 0 1 1 0 -32 Z",0],["cd",30,32,2.6]]
+};
+function drawIcon(ctx,ss,x,y,s,color){
+  const ops=ICON_OPS[ss]; if(!ops) return;
+  ctx.save(); ctx.translate(x-s/2,y-s/2); ctx.scale(s/64,s/64);
+  ctx.lineWidth=2.6; ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=color;
+  ops.forEach(op=>{
+    if(op[0]==="c"){ ctx.beginPath(); ctx.arc(op[1],op[2],op[3],0,7); ctx.stroke(); }
+    else if(op[0]==="cd"){ ctx.beginPath(); ctx.arc(op[1],op[2],op[3],0,7); ctx.fillStyle="#c8452f"; ctx.fill(); }
+    else if(op[0]==="l"){ ctx.beginPath(); ctx.moveTo(op[1],op[2]); ctx.lineTo(op[3],op[4]); ctx.stroke(); }
+    else if(op[0]==="p"){ const pa=new Path2D(op[1]); if(op[2]){ ctx.fillStyle="rgba(185,132,47,.13)"; ctx.fill(pa); } ctx.stroke(pa); }
+  });
+  ctx.restore();
+}
+function iconSVG(ss,size,color){
+  const ops=ICON_OPS[ss]||[]; let inner="";
+  ops.forEach(op=>{
+    if(op[0]==="c") inner+="<circle cx='"+op[1]+"' cy='"+op[2]+"' r='"+op[3]+"'/>";
+    else if(op[0]==="cd") inner+="<circle cx='"+op[1]+"' cy='"+op[2]+"' r='"+op[3]+"' fill='#c8452f' stroke='none'/>";
+    else if(op[0]==="l") inner+="<line x1='"+op[1]+"' y1='"+op[2]+"' x2='"+op[3]+"' y2='"+op[4]+"'/>";
+    else if(op[0]==="p") inner+="<path d='"+op[1]+"'"+(op[2]?" fill='rgba(185,132,47,.13)'":"")+"/>";
+  });
+  return "<svg viewBox='0 0 64 64' width='"+size+"' height='"+size+"' fill='none' stroke='"+color+"' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-0.18em'>"+inner+"</svg>";
+}
 /* 繪製一幀（A=動畫狀態，省略則為靜態完成圖） */
 function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   A=A||{}; const cx=W/2;
@@ -1597,14 +1633,15 @@ function renderCard(ctx,W,H,big,r,t,nameA,nameB,A){
   ctx.fillStyle="rgba(255,255,255,.9)"; ctx.font='600 '+(big?36:31)+'px "Noto Sans TC",sans-serif';
   ctx.fillText("分 ╱ 100", cx, cyc+(big?138:110));
 
-  // 名字 → 稱號 → 稀有度（間距拉大、用滿空間）
+  // 十神專屬圖示（取代 emoji）＋ 名字 → 稱號 → 稀有度
   ctx.save(); ctx.globalAlpha=midA;
-  const namesY=cyc+R+(big?130:104);
+  drawIcon(ctx, r.shishenAB, cx, cyc+R+(big?58:48), (big?70:58), "#b08838");
+  const namesY=cyc+R+(big?138:112);
   ctx.fillStyle=soft; ctx.font='600 '+(big?34:30)+'px "Noto Sans TC",sans-serif';
   ctx.fillText(clip(nameA,6)+"　✕　"+clip(nameB,6), cx, namesY);
-  const titleY=namesY+(big?165:132);
+  const titleY=namesY+(big?160:128);
   ctx.fillStyle=ink; ctx.font='700 '+(big?108:90)+'px "Noto Serif TC",serif';
-  ctx.fillText(ct.emo+" "+ct.name, cx, titleY);
+  ctx.fillText(ct.name, cx, titleY);
   const rareY=titleY+(big?96:76);
   ctx.fillStyle=acc; ctx.font='600 '+(big?31:28)+'px "Noto Sans TC",sans-serif';
   ctx.fillText((rare.p<2?"✦ ":"")+rare.tier+" ・ 約每 "+rare.oneIn+" 個家庭 1 位", cx, rareY);
